@@ -4,3 +4,5 @@ nf-prov
 nf-prov/*
 *.html
 **/*.html
+multiqc/multiqc_data
+multiqc/multiqc_data/*
