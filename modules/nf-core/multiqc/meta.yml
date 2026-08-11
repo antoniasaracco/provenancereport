@@ -1,0 +1,54 @@
+name: multiqc
+description: Aggregate results from bioinformatics analyses across many samples into a single report
+keywords:
+  - QC
+  - bioinformatics tools
+  - beautiful stand-alone HTML report
+tools:
+  - multiqc:
+      description: Aggregate results from bioinformatics analyses across many samples into a single report
+      homepage: https://multiqc.info/
+      documentation: https://docs.seqera.io/multiqc/
+      licence: [GPL-3.0-or-later]
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information
+    - multiqc_files:
+        type: file
+        description: Files to analyse
+  - multiqc_config:
+      type: file
+      description: Optional MultiQC config file
+  - extra_multiqc_config:
+      type: file
+      description: Optional additional MultiQC config file
+  - logo:
+      type: file
+      description: Optional report logo
+  - multiqc_report_title:
+      type: string
+      description: Report title
+output:
+  html:
+    - - meta:
+        type: map
+      - "*.html":
+          type: file
+          description: MultiQC HTML report
+  data:
+    - - meta:
+        type: map
+      - multiqc_data:
+          type: directory
+          description: MultiQC parsed data and sources
+  plots:
+    - - meta:
+        type: map
+      - multiqc_plots:
+          type: directory
+          description: MultiQC plot files
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions

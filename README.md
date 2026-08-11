@@ -21,14 +21,15 @@
 
 ## Introduction
 
-**nf-core/provenancereport** is a reporting pipeline that validates a samplesheet and renders reproducible Quarto reports. The samplesheet has two columns, `id` and `path`, where each row points to one input file. The pipeline stages all listed files into a single Quarto render and publishes the rendered report plus any generated artifacts.
+**nf-core/provenancereport** is a reporting pipeline that validates a samplesheet and renders reproducible Quarto reports. The samplesheet has two columns, `id` and `path`, where each row points to one input file. The pipeline stages all listed files into a single Quarto render and publishes the rendered report, generated artifacts, and an auditable MultiQC execution report.
 
 The default workflow performs the following steps:
 
 1. Validate and normalise the input samplesheet with `nf-schema`.
 2. Resolve each `path` entry from the samplesheet as one input file.
 3. Render one Quarto notebook with all listed files using the nf-core `quartonotebook` module.
-4. Publish the generated HTML report, report artifacts, and standard Nextflow execution metadata.
+4. Summarise checksums and execution environment metadata in a standalone MultiQC report.
+5. Publish the generated HTML reports, report artifacts, and standard Nextflow execution metadata.
 
 ![nf-core/provenancereport metro map](docs/images/provenancereport_metro.svg)
 

@@ -15,12 +15,13 @@ nextflow_pipeline {
         }
 
         then {
-            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'multiqc/multiqc_data*'])
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             assert workflow.success
             assertAll(
                 { assert stable_path.findAll { path -> path == "quartonotebook/artifacts/external_rds_summary.tsv" }.size() == 1 },
                 { assert stable_path.findAll { path -> path.startsWith("quartonotebook/") && path.endsWith(".html") }.size() == 1 },
+                { assert stable_path.contains('multiqc/multiqc_report.html') },
                 { assert snapshot(
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_provenancereport_software_versions.yml"),
                     stable_path,

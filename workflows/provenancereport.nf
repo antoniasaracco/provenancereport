@@ -5,6 +5,8 @@
 */
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { QUARTONOTEBOOK        } from '../modules/nf-core/quartonotebook/main'
+include { MULTIQC               } from '../modules/nf-core/multiqc/main'
+include { PROVENANCECOLLECT     } from '../modules/local/provenancecollect/main'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_provenancereport_pipeline'
 
@@ -64,6 +66,29 @@ workflow PROVENANCEREPORT {
         ch_quarto_input.extensions,
     )
 
+    def ch_input_files = ch_samplesheet.map { _meta, input_file -> input_file }.collect()
+    PROVENANCECOLLECT (
+        ch_input_files,
+        QUARTONOTEBOOK.out.html,
+        workflow.manifest.name,
+        workflow.manifest.version ?: 'development',
+        workflow.commandLine,
+        'community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665',
+    )
+
+    ch_multiqc_files = PROVENANCECOLLECT.out.checksums
+        .mix(PROVENANCECOLLECT.out.environment)
+        .collect()
+        .map { files -> [[id: 'provenancereport'], files] }
+
+    MULTIQC (
+        ch_multiqc_files,
+        channel.value([]),
+        channel.value([]),
+        channel.value([]),
+        'nf-core/provenancereport execution report',
+    )
+
     //
     // Collate and save software versions
     //
@@ -95,6 +120,7 @@ workflow PROVENANCEREPORT {
     emit:
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
     reports        = QUARTONOTEBOOK.out.html     // channel: [ val(meta), path(html) ]
+    multiqc_report = MULTIQC.out.html            // channel: [ val(meta), path(html) ]
 }
 
 /*
