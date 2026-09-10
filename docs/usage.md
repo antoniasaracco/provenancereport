@@ -10,6 +10,27 @@
 
 The default report notebook is `assets/provenance_report.qmd`. You can replace it by passing `--notebook path/to/report.qmd`. In practice, this can be any Quarto notebook that can run non-interactively inside the container or Conda environment configured for `QUARTONOTEBOOK` and read the files listed in the samplesheet.
 
+## Requirements
+
+Before running the pipeline, ensure that the execution environment provides:
+
+- Nextflow `25.10.4` or later. Check the installed version with `nextflow -version`.
+- One supported software profile and its corresponding runtime. Docker or Singularity is recommended for reproducibility; Apptainer, Podman, Conda, and the other profiles listed under [`-profile`](#-profile) are also supported.
+- Read access to the samplesheet and every local or remote path it references.
+- Write access to `--outdir`. Use an absolute output path when running on cloud infrastructure.
+- For a custom `--notebook`, a report runtime containing Quarto and all R, Python, Julia, Quarto extension, and system dependencies used by the notebook. The bundled notebook uses the pipeline's default runtime.
+
+Container images, Conda environments, Nextflow plugins, and remote input files must either be available in a local cache or accessible from the execution environment.
+
+## Input parameters
+
+| Parameter    | Required | Description                                                                                                                                                    |
+| ------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--input`    | Yes      | CSV samplesheet containing at least one data row and the required `id` and `path` columns. All rows are rendered together in one report.                       |
+| `--outdir`   | Yes      | Directory in which published reports, checksums, provenance records, and execution metadata are written.                                                       |
+| `--notebook` | No       | Quarto `.qmd` file to render. Defaults to the bundled `assets/provenance_report.qmd`.                                                                            |
+| `--document` | No       | Review or sign-off file to publish with the results and list in MultiQC. It is retained for traceability and is not used as an input to the Quarto render.     |
+
 ## Samplesheet input
 
 Create a samplesheet with the files you would like to make available to the report. It must be a comma-separated file with a header row and the columns shown below.

@@ -23,6 +23,15 @@
 
 **nf-core/provenancereport** is a reporting pipeline that validates a samplesheet and renders reproducible Quarto reports. The samplesheet has two columns, `id` and `path`, where each row points to one input file. The pipeline stages all listed files into a single Quarto render and publishes the rendered report plus any generated artifacts.
 
+### Requirements
+
+- Nextflow `25.10.4` or later.
+- A supported execution environment such as Docker, Singularity, Apptainer, or Conda. Docker or Singularity is recommended for reproducibility.
+- Read access to the samplesheet and every file it references, plus write access to `--outdir`.
+- For a custom `--notebook`, a configured report runtime containing Quarto and every language, package, and system dependency used by that notebook.
+
+See the [usage requirements](docs/usage.md#requirements) for details.
+
 The default workflow performs the following steps:
 
 1. Validate and normalise the input samplesheet with `nf-schema`.
@@ -74,9 +83,16 @@ For more details and further functionality, please refer to the [usage documenta
 
 ## Pipeline output
 
-To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/provenancereport/results) tab on the nf-core website pipeline page.
-For more details about the output files and reports, please refer to the
-[output documentation](https://nf-co.re/provenancereport/output).
+A successful run produces:
+
+- `quartonotebook/*.html`: the rendered Quarto report, plus the source notebook and any report artifacts.
+- `md5sum/provenancereport.md5`: checksums for every samplesheet input and the rendered report.
+- `multiqc/multiqc_report.html`: an audit report covering inputs, checksums, outputs, parameters, software versions, and the report runtime.
+- `pipeline_info/manifest_<timestamp>.bco.json` and `ro-crate-metadata_<timestamp>.json`: BCO and Workflow Run RO-Crate provenance.
+- `pipeline_info/`: Nextflow execution reports, trace, DAG, parameters, and collected software versions.
+- The original review or sign-off file at the results root when `--document` is provided.
+
+For the complete directory layout and guidance on interpreting each file, see the [output documentation](https://nf-co.re/provenancereport/output).
 
 ## Credits
 
