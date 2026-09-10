@@ -24,12 +24,12 @@ Container images, Conda environments, Nextflow plugins, and remote input files m
 
 ## Input parameters
 
-| Parameter    | Required | Description                                                                                                                                                    |
-| ------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--input`    | Yes      | CSV samplesheet containing at least one data row and the required `id` and `path` columns. All rows are rendered together in one report.                       |
-| `--outdir`   | Yes      | Directory in which published reports, checksums, provenance records, and execution metadata are written.                                                       |
-| `--notebook` | No       | Quarto `.qmd` file to render. Defaults to the bundled `assets/provenance_report.qmd`.                                                                            |
-| `--document` | No       | Review or sign-off file to publish with the results and list in MultiQC. It is retained for traceability and is not used as an input to the Quarto render.     |
+| Parameter    | Required | Description                                                                                                                                                |
+| ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--input`    | Yes      | CSV samplesheet containing at least one data row and the required `id` and `path` columns. All rows are rendered together in one report.                   |
+| `--outdir`   | Yes      | Directory in which published reports, checksums, provenance records, and execution metadata are written.                                                   |
+| `--notebook` | No       | Quarto `.qmd` file to render. Defaults to the bundled `assets/provenance_report.qmd`.                                                                      |
+| `--document` | No       | Review or sign-off file to publish with the results and list in MultiQC. It is retained for traceability and is not used as an input to the Quarto render. |
 
 ## Samplesheet input
 
