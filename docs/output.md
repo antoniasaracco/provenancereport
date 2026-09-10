@@ -111,7 +111,9 @@ The **Pipeline Outputs** table lists the files intended for users and their loca
 
 The **Report Runtime Environment** table identifies the runtime inherited from `QUARTONOTEBOOK`. The adjacent **R sessionInfo()** section records the R version, platform, locale, and loaded packages from that same environment.
 
-![MultiQC runtime environment table and R session information](images/multiqc_runtime_environment.png)
+![MultiQC Report Runtime Environment table](images/multiqc_runtime_environment.png)
+
+![MultiQC R sessionInfo output](images/multiqc_r_session_info.png)
 
 ### nf-prov provenance
 
