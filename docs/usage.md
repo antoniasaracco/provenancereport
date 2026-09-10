@@ -18,9 +18,7 @@ Before running the pipeline, ensure that the execution environment provides:
 - One supported software profile and its corresponding runtime. Docker or Singularity is recommended for reproducibility; Apptainer, Podman, Conda, and the other profiles listed under [`-profile`](#-profile) are also supported.
 - Read access to the samplesheet and every local or remote path it references.
 - Write access to `--outdir`. Use an absolute output path when running on cloud infrastructure.
-- For a custom `--notebook`, a report runtime containing Quarto and all R, Python, Julia, Quarto extension, and system dependencies used by the notebook. The bundled notebook uses the pipeline's default runtime.
-
-Container images, Conda environments, Nextflow plugins, and remote input files must either be available in a local cache or accessible from the execution environment.
+- For a custom `--notebook`, a report runtime containing Quarto and all R, Python and system dependencies used by the notebook. The bundled notebook uses the pipeline's default runtime.
 
 ## Input parameters
 
