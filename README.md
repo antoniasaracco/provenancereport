@@ -29,8 +29,11 @@ The default workflow performs the following steps:
 2. Resolve each `path` entry from the samplesheet as one input file.
 3. Render one Quarto notebook with all listed files using the nf-core `quartonotebook` module.
 4. Calculate MD5 checksums for every samplesheet input and the rendered Quarto HTML using the nf-core `md5sum` module.
-5. Run a local environment collector in the same `--report_container` image as Quarto and generate a MultiQC audit report containing the input samplesheet, file checksums, run configuration, software versions, container reference, and R/Python runtime information.
-6. Publish the reports, artifacts, checksums, and standard Nextflow execution metadata.
+5. Run `REPORTENVIRONMENT` in the resolved Quarto runtime to collect the R session, Python version, and container or Conda environment details.
+6. If `--document` is provided, publish the review or sign-off document with the pipeline results.
+7. Generate a MultiQC audit report containing the input samplesheet, file checksums, published outputs, run configuration, software versions, and runtime information.
+8. Generate BCO and Workflow Run RO-Crate provenance with the `nf-prov` plugin.
+9. Publish the reports, artifacts, checksums, and standard Nextflow execution metadata.
 
 ![nf-core/provenancereport metro map](docs/images/provenancereport_metro.svg)
 

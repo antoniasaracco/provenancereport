@@ -72,8 +72,20 @@ The MultiQC report is generated with the nf-core `multiqc` module and is configu
 - A table listing every samplesheet input and the rendered Quarto report with its MD5 checksum.
 - A table listing the rendered Quarto HTML report and, if applicable, the supplied review document together with their published output paths.
 - The exact pipeline launch command and a description of the report-generation steps.
-- The resolved `QUARTONOTEBOOK` runtime backend and reference, activated Conda environment path when available, container engine, active Nextflow profile, `R sessionInfo()` output, and Python version. `REPORTENVIRONMENT` inherits the resolved container or Conda runtime when possible; with no managed runtime, the runtime is reported as `Not configured`.
+- The resolved `QUARTONOTEBOOK` runtime backend and reference, container engine, active Nextflow profile, `R sessionInfo()` output, and Python version. `REPORTENVIRONMENT` inherits the resolved container or Conda runtime when possible; with no managed runtime, the runtime is reported as `Not configured`.
 - Pipeline, Nextflow, and software versions reported by `QUARTONOTEBOOK`.
+
+#### Published outputs
+
+The **Pipeline Outputs** table lists the files intended for users and their locations below the results directory. In this example, `review_signoff.md` was supplied with `--document` and is listed alongside the rendered Quarto report.
+
+![MultiQC Pipeline Outputs table showing a rendered Quarto report and an optional review document](images/multiqc_pipeline_outputs.png)
+
+#### Report runtime environment
+
+The **Report Runtime Environment** table identifies the runtime inherited from `QUARTONOTEBOOK`. The adjacent **R sessionInfo()** section records the R version, platform, locale, and loaded packages from that same environment.
+
+![MultiQC runtime environment table and R session information](images/multiqc_runtime_environment.png)
 
 ### nf-prov provenance
 
