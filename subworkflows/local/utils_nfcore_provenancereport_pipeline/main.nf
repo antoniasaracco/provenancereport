@@ -83,6 +83,7 @@ workflow PIPELINE_INITIALISATION {
         workflow,
         validate_params,
         null,
+        monochrome_logs,
         help,
         help_full,
         show_hidden,
