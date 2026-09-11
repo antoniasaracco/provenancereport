@@ -113,7 +113,19 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
 <!-- If you use nf-core/provenancereport for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+Please cite the core reporting and provenance software used by the pipeline:
+
+> **Quarto.**
+>
+> J.J. Allaire, Charles Teague, Carlos Scheidegger, Yihui Xie, Christophe Dervieux & Gordon Woodhull.
+>
+> _Computer software._ [https://quarto.org/](https://quarto.org/).
+
+> **nf-prov: Nextflow plugin to render provenance reports for pipeline runs.**
+>
+> Nextflow.
+>
+> _Computer software_, version 1.7.0. [nextflow-io/nf-prov](https://github.com/nextflow-io/nf-prov/releases/tag/1.7.0).
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
