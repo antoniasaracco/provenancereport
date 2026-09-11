@@ -11,7 +11,7 @@
                 }
             },
             [
-                "README.md:md5,675e5d6c3dbc9598e26c801377bae67e",
+                "README.md:md5,c7928ad70830ff85774b7c76a1daa59d",
                 "main.nf:md5,f8cc1568cd9c0105fb6cb26f6be01afd",
                 "md5sum",
                 "md5sum/provenancereport.md5",
@@ -41,7 +41,7 @@
                 "samplesheet_quartonotebook.csv"
             ],
             [
-                "README.md:md5,675e5d6c3dbc9598e26c801377bae67e",
+                "README.md:md5,c7928ad70830ff85774b7c76a1daa59d",
                 "main.nf:md5,f8cc1568cd9c0105fb6cb26f6be01afd",
                 "nextflow_schema.json:md5,965a47a7ef29471866ea060b729f0015",
                 "artifact.txt:md5,b10a8db164e0754105b7a99be72e3fe5",

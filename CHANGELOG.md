@@ -9,6 +9,7 @@ Initial release of nf-core/provenancereport, created with the [nf-core](https://
 
 ### `Added`
 
+- [#35](https://github.com/nf-core/provenancereport/pull/35) - Add test full.
 - [#32](https://github.com/nf-core/provenancereport/pull/32) - Refactor report runtime environment collection into the local `REPORTENVIRONMENT` module.
 - Report and inherit the resolved `QUARTONOTEBOOK` runtime environment in `REPORTENVIRONMENT`, including container and Conda runtimes.
 - [#26](https://github.com/nf-core/provenancereport/issues/26) - Attach documentation to pipeline run.
