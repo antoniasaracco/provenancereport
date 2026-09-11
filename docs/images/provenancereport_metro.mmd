@@ -15,10 +15,10 @@
 
 graph LR
     subgraph initialisation [Initialisation]
-        samplesheet[""]
-        custom_report[""]
-        custom_config[""]
-        review_document[""]
+        samplesheet[ ]
+        custom_report[ ]
+        custom_config[ ]
+        review_document[ ]
     end
 
     subgraph provenance [Provenance report]
@@ -31,12 +31,12 @@ graph LR
     end
 
     subgraph outputs [Outputs]
-        quarto_report[""]
-        multiqc_report[""]
-        review_output[""]
-        checksums[""]
-        bco[""]
-        rocrate[""]
+        quarto_report[ ]
+        multiqc_report[ ]
+        review_output[ ]
+        checksums[ ]
+        bco[ ]
+        rocrate[ ]
     end
 
     samplesheet -->|report| quartonotebook
