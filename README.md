@@ -77,11 +77,11 @@ For more details about the output files and reports, please refer to the
 
 ## Credits
 
-nf-core/provenancereport was originally written by Peltzer, Sturm, Schwab.
+nf-core/provenancereport was originally written by Alexander Peltzer, Gregor Sturm, Julian Schwab.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+Antonia Saracco, Delfina Terradas, Anabella Trigila.
 
 ## Contributions and Support
 

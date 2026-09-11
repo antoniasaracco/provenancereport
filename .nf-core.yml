@@ -1,5 +1,5 @@
 repository_type: pipeline
-nf_core_version: "4.0.2"
+nf_core_version: "4.1.0"
 template:
   author: Alexander Peltzer, Gregor Sturm, Julian Schwab
   description: A pipeline to produce provenance reports.
