@@ -8,3 +8,6 @@ md5sum/*.md5
 multiqc/multiqc_data/*
 ro-crate-metadata_*.json
 nextflow.config
+artifacts.csv
+multiqc_report.csv
+document.csv

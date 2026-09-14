@@ -28,6 +28,7 @@ workflow PROVENANCEREPORT {
     main:
 
     def ch_versions = channel.empty()
+    ch_multiqc_reports = channel.empty()
     def report_notebook = file(params.notebook ?: "${projectDir}/assets/provenance_report.qmd", checkIfExists: true)
     ch_document_file = params.document ? file(params.document) : channel.empty()
 
@@ -201,13 +202,21 @@ workflow PROVENANCEREPORT {
         }
     )
 
+    ch_multiqc_reports = ch_multiqc_reports
+            .mix(MULTIQC.out.report.map { _meta, report -> report })
+            .mix(MULTIQC.out.data.map   { _meta, data   -> data   })
+            .mix(MULTIQC.out.plots.map  { _meta, plots  -> plots  })
+
     STAGE_FILE (ch_document_file)
 
     emit:
-    versions       = ch_versions                                        // channel: [ path(versions.yml) ]
-    reports        = QUARTONOTEBOOK.out.html                            // channel: [ val(meta), path(html) ]
-    multiqc_report = MULTIQC.out.report.map { _meta, report -> report } // channel: path(multiqc_report.html)
+    versions       = ch_versions                                         // channel: [ path(versions.yml) ]
+    multiqc_report = ch_multiqc_reports
     document       = STAGE_FILE.out.staged_file
+    reports        = QUARTONOTEBOOK.out.html.map      { _meta, html     -> html     }
+    notebook       = QUARTONOTEBOOK.out.notebook.map  { _meta, qmd      -> qmd      }
+    artifacts      = QUARTONOTEBOOK.out.artifacts.map { _meta, artifact -> artifact } // channel: [ val(meta), path(artifacts/*) ]
+    md5sum         = MD5SUM.out.checksum.map          { _meta, checksum -> checksum }
 }
 
 /*
