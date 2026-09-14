@@ -23,18 +23,21 @@ workflow PROVENANCEREPORT {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
+    ch_input       // channel: input samplesheet file
+    ch_notebook    // channel: Quarto notebook file
+    ch_document    // channel: optional supporting document
     outdir
 
     main:
 
     def ch_versions = channel.empty()
     ch_multiqc_reports = channel.empty()
-    def report_notebook = file(params.notebook ?: "${projectDir}/assets/provenance_report.qmd", checkIfExists: true)
-    ch_document_file = params.document ? file(params.document) : channel.empty()
 
     ch_quarto_input = ch_samplesheet
         .collect(flat: false)
-        .multiMap { rows ->
+        .map { rows -> [rows] }
+        .combine(ch_notebook)
+        .multiMap { rows, report_notebook ->
             def input_ids = rows.collect { meta, _input_file -> meta.id }
             def input_files = rows.collect { _meta, input_file -> input_file }
             def input_file_names = input_files.collect { input_file -> input_file.getName() }
@@ -122,7 +125,7 @@ workflow PROVENANCEREPORT {
     def ch_multiqc_files = channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     ch_multiqc_files = ch_multiqc_files.mix(
-        channel.value(file(params.input, checkIfExists: true)).collectFile(name: 'samplesheet.csv')
+        ch_input.collectFile(name: 'samplesheet.csv')
     )
 
     def ch_file_checksums = MD5SUM.out.checksum
@@ -171,16 +174,14 @@ workflow PROVENANCEREPORT {
                 output_path: "quartonotebook/${report.getName()}",
             ]
         }
-    if (params.document) {
-        ch_pipeline_outputs_rows = ch_pipeline_outputs_rows.mix(
-            channel.value(
-                [
-                    file: ch_document_file.getName(),
-                    output_path: ch_document_file.getName(),
-                ]
-            )
-        )
-    }
+    ch_pipeline_outputs_rows = ch_pipeline_outputs_rows.mix(
+        ch_document.map { document_file ->
+            [
+                file: document_file.getName(),
+                output_path: document_file.getName(),
+            ]
+        }
+    )
     def ch_pipeline_outputs = ch_pipeline_outputs_rows
         .collect()
         .map { rows ->
@@ -207,7 +208,7 @@ workflow PROVENANCEREPORT {
             .mix(MULTIQC.out.data.map   { _meta, data   -> data   })
             .mix(MULTIQC.out.plots.map  { _meta, plots  -> plots  })
 
-    STAGE_FILE (ch_document_file)
+    STAGE_FILE (ch_document)
 
     emit:
     versions       = ch_versions                                         // channel: [ path(versions.yml) ]
