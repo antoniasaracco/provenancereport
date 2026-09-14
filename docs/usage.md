@@ -10,6 +10,25 @@
 
 The default report notebook is `assets/provenance_report.qmd`. You can replace it by passing `--notebook path/to/report.qmd`. In practice, this can be any Quarto notebook that can run non-interactively inside the container or Conda environment configured for `QUARTONOTEBOOK` and read the files listed in the samplesheet.
 
+## Requirements
+
+Before running the pipeline, ensure that the execution environment provides:
+
+- Nextflow `25.10.4` or later. Check the installed version with `nextflow -version`.
+- One supported software profile and its corresponding runtime. Docker or Singularity is recommended for reproducibility; Apptainer, Podman, Conda, and the other profiles listed under [`-profile`](#-profile) are also supported.
+- Read access to the samplesheet and every local or remote path it references.
+- Write access to `--outdir`. Use an absolute output path when running on cloud infrastructure.
+- For a custom `--notebook`, a report runtime containing Quarto and all R, Python and system dependencies used by the notebook. The bundled notebook uses the pipeline's default runtime.
+
+## Input parameters
+
+| Parameter    | Required | Description                                                                                                                                                |
+| ------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--input`    | Yes      | CSV samplesheet containing at least one data row and the required `id` and `path` columns. All rows are rendered together in one report.                   |
+| `--outdir`   | Yes      | Directory in which published reports, checksums, provenance records, and execution metadata are written.                                                   |
+| `--notebook` | No       | Quarto `.qmd` file to render. Defaults to the bundled `assets/provenance_report.qmd`.                                                                      |
+| `--document` | No       | Review or sign-off file to publish with the results and list in MultiQC. It is retained for traceability and is not used as an input to the Quarto render. |
+
 ## Samplesheet input
 
 Create a samplesheet with the files you would like to make available to the report. It must be a comma-separated file with a header row and the columns shown below.
@@ -107,16 +126,17 @@ When set, the pipeline stages this file into the results and adds it to the "Pip
 
 ## How the pipeline works
 
-The main workflow performs eight steps:
+The main workflow performs nine steps:
 
 1. `PIPELINE_INITIALISATION` validates `--input` with the `nf-schema` plugin and resolves each `path` entry as a single file.
 2. The workflow selects the notebook using `--notebook`, or the bundled `assets/provenance_report.qmd` if `--notebook` is unset.
 3. `QUARTONOTEBOOK` renders one Quarto HTML report using all samplesheet rows. The process receives `[meta, notebook]`, a parameter map, and the actual input files as a plain path channel. Its official eval outputs provide versions for software present in its runtime environment; empty version values are discarded.
 4. `MD5SUM` calculates MD5 checksums for every samplesheet input and for the rendered Quarto HTML report.
-5. `REPORTENVIRONMENT` receives the resolved `QUARTONOTEBOOK` runtime metadata and inherits the matching container image or Conda environment when one is configured. It captures the runtime backend, runtime reference, activated Conda path when available, `R sessionInfo()`, and Python version. Missing R or Python installations are reported as unavailable without failing the run.
+5. `REPORTENVIRONMENT` receives the resolved `QUARTONOTEBOOK` runtime metadata and inherits the matching container image or Conda environment when one is configured. It captures the runtime backend, runtime reference, `R sessionInfo()`, and Python version. Missing R or Python installations are reported as unavailable without failing the run.
 6. If `--document` is set, the workflow stages the supplied review file into the published results via `STAGE_FILE`.
 7. `MULTIQC` collates the input samplesheet, file checksums, pipeline outputs, workflow parameters, software versions, runtime-environment information, and Nextflow execution profile.
-8. The workflow publishes the Quarto and MultiQC reports, report artifacts, checksums, the optional review document, and standard pipeline metadata under `pipeline_info/`.
+8. The `nf-prov` plugin generates BCO and Workflow Run RO-Crate provenance records.
+9. The workflow publishes the Quarto and MultiQC reports, report artifacts, checksums, the optional review document, and standard pipeline metadata under `pipeline_info/`.
 
 The notebook receives these useful parameters:
 
