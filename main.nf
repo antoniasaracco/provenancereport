@@ -44,6 +44,11 @@ workflow NFCORE_PROVENANCEREPORT {
 
     emit:
     multiqc_report = PROVENANCEREPORT.out.multiqc_report
+    reports        = PROVENANCEREPORT.out.reports
+    notebook       = PROVENANCEREPORT.out.notebook
+    artifacts      = PROVENANCEREPORT.out.artifacts
+    md5sum         = PROVENANCEREPORT.out.md5sum
+    document       = PROVENANCEREPORT.out.document
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,6 +91,49 @@ workflow {
         params.monochrome_logs,
         NFCORE_PROVENANCEREPORT.out.multiqc_report,
     )
+
+    publish:
+    reports        = NFCORE_PROVENANCEREPORT.out.reports
+    notebook       = NFCORE_PROVENANCEREPORT.out.notebook
+    artifacts      = NFCORE_PROVENANCEREPORT.out.artifacts
+    multiqc_report = NFCORE_PROVENANCEREPORT.out.multiqc_report
+    md5sum         = NFCORE_PROVENANCEREPORT.out.md5sum
+    document       = NFCORE_PROVENANCEREPORT.out.document
+}
+
+output {
+    reports {
+        path 'quartonotebook'
+        mode params.publish_dir_mode
+    }
+    notebook {
+        path 'quartonotebook'
+        mode params.publish_dir_mode
+    }
+    artifacts {
+        path 'quartonotebook'
+        mode params.publish_dir_mode
+        index {
+            path 'artifacts.csv'
+        }
+    }
+    multiqc_report {
+        path 'multiqc'
+        mode params.publish_dir_mode
+        index {
+            path 'multiqc_report.csv'
+        }
+    }
+    md5sum {
+        path 'md5sum'
+        mode params.publish_dir_mode
+    }
+    document{
+        mode params.publish_dir_mode
+        index {
+            path 'document.csv'
+        }
+    }
 }
 
 /*
