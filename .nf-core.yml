@@ -14,7 +14,7 @@ lint:
     - assets/multiqc_config.yml
     - .github/workflows/linting_comment.yml
     - conf/igenomes.config
-    - conf/igenomes_ignored.config 
+    - conf/igenomes_ignored.config
   multiqc_config: false
   files_unchanged:
     - .github/workflows/branch.yml
