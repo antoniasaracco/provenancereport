@@ -33,22 +33,18 @@
                     
                 ],
                 "5": [
-                    [
-                        "QUARTONOTEBOOK",
-                        "docker",
-                        "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
-                    ]
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "6": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "quarto",
                         "1.7.31"
                     ]
                 ],
                 "7": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "papermill",
                         "2.6.0"
                     ]
@@ -83,60 +79,52 @@
                         "params.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "runtime_environment": [
-                    [
-                        "QUARTONOTEBOOK",
-                        "docker",
-                        "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
-                    ]
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "versions_papermill": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "papermill",
                         "2.6.0"
                     ]
                 ],
                 "versions_quarto": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "quarto",
                         "1.7.31"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-08-26T20:54:10.127349397",
+        "timestamp": "2026-08-18T09:19:47.986553",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
     "test notebook - [qmd:r]": {
         "content": [
             {
+                "versions": [
+                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
+                ],
                 "versions_papermill": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "papermill",
                         "2.6.0"
                     ]
                 ],
                 "versions_quarto": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "quarto",
                         "1.7.31"
                     ]
                 ]
             },
-            [
-                [
-                    "QUARTONOTEBOOK",
-                    "docker",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
-                ]
-            ],
             [
                 [
                     {
@@ -150,41 +138,37 @@
                     {
                         "id": "test"
                     },
-                    "params.yml:md5,8b9e438c0eb4850e20035a1222cd151e"
+                    "params.yml:md5,6d2ec3cf3e2f15958ab8ab440d651f8d"
                 ]
             ]
         ],
-        "timestamp": "2026-08-26T20:52:16.406458758",
+        "timestamp": "2026-08-18T15:12:25.10271",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
     "test notebook - parametrized - [qmd:python]": {
         "content": [
             {
+                "versions": [
+                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+                ],
                 "versions_papermill": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "papermill",
                         "2.6.0"
                     ]
                 ],
                 "versions_quarto": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "quarto",
                         "1.7.31"
                     ]
                 ]
             },
-            [
-                [
-                    "QUARTONOTEBOOK",
-                    "docker",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
-                ]
-            ],
             [
                 [
                     {
@@ -198,41 +182,37 @@
                     {
                         "id": "test"
                     },
-                    "params.yml:md5,0dbcd58276179f0700e144e45d8d3c76"
+                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
                 ]
             ]
         ],
-        "timestamp": "2026-08-26T20:53:21.804268378",
+        "timestamp": "2026-08-18T15:13:37.473159",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
     "test notebook - parametrized - [rmd]": {
         "content": [
             {
+                "versions": [
+                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
+                ],
                 "versions_papermill": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "papermill",
                         "2.6.0"
                     ]
                 ],
                 "versions_quarto": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "quarto",
                         "1.7.31"
                     ]
                 ]
             },
-            [
-                [
-                    "QUARTONOTEBOOK",
-                    "docker",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
-                ]
-            ],
             [
                 [
                     {
@@ -246,84 +226,37 @@
                     {
                         "id": "test"
                     },
-                    "params.yml:md5,0dbcd58276179f0700e144e45d8d3c76"
+                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
                 ]
             ]
         ],
-        "timestamp": "2026-08-26T20:53:42.093083194",
+        "timestamp": "2026-08-18T15:13:53.297883",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
     "test notebook - parametrized - [ipynb]": {
         "content": [
             {
+                "versions": [
+                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+                ],
                 "versions_papermill": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "papermill",
                         "2.6.0"
                     ]
                 ],
                 "versions_quarto": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "quarto",
                         "1.7.31"
                     ]
                 ]
             },
-            [
-                [
-                    "QUARTONOTEBOOK",
-                    "docker",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
-                ]
-            ],
-            [
-                
-            ],
-            [
-                [
-                    {
-                        "id": "test"
-                    },
-                    "params.yml:md5,0dbcd58276179f0700e144e45d8d3c76"
-                ]
-            ]
-        ],
-        "timestamp": "2026-08-26T20:54:01.084552727",
-        "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
-        }
-    },
-    "test notebook - [qmd:python]": {
-        "content": [
-            {
-                "versions_papermill": [
-                    [
-                        "QUARTONOTEBOOK",
-                        "papermill",
-                        "2.6.0"
-                    ]
-                ],
-                "versions_quarto": [
-                    [
-                        "QUARTONOTEBOOK",
-                        "quarto",
-                        "1.7.31"
-                    ]
-                ]
-            },
-            [
-                [
-                    "QUARTONOTEBOOK",
-                    "docker",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
-                ]
-            ],
             [
                 [
                     {
@@ -337,29 +270,32 @@
                     {
                         "id": "test"
                     },
-                    "params.yml:md5,8b9e438c0eb4850e20035a1222cd151e"
+                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
                 ]
             ]
         ],
-        "timestamp": "2026-08-26T20:52:38.682737352",
+        "timestamp": "2026-08-18T15:14:10.605053",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
-    "test notebook - parametrized - [qmd:r]": {
+    "test notebook - [qmd:python]": {
         "content": [
             {
+                "versions": [
+                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+                ],
                 "versions_papermill": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "papermill",
                         "2.6.0"
                     ]
                 ],
                 "versions_quarto": [
                     [
-                        "QUARTONOTEBOOK",
+                        "QUARTO_NOTEBOOK",
                         "quarto",
                         "1.7.31"
                     ]
@@ -367,11 +303,48 @@
             },
             [
                 [
-                    "QUARTONOTEBOOK",
-                    "docker",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
+                    {
+                        "id": "test"
+                    },
+                    "artifact.txt:md5,8ddd8be4b179a529afa5f2ffae4b9858"
                 ]
             ],
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "params.yml:md5,6d2ec3cf3e2f15958ab8ab440d651f8d"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-18T15:12:45.306028",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "test notebook - parametrized - [qmd:r]": {
+        "content": [
+            {
+                "versions": [
+                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
+                ],
+                "versions_papermill": [
+                    [
+                        "QUARTO_NOTEBOOK",
+                        "papermill",
+                        "2.6.0"
+                    ]
+                ],
+                "versions_quarto": [
+                    [
+                        "QUARTO_NOTEBOOK",
+                        "quarto",
+                        "1.7.31"
+                    ]
+                ]
+            },
             [
                 [
                     {
@@ -385,14 +358,14 @@
                     {
                         "id": "test"
                     },
-                    "params.yml:md5,0dbcd58276179f0700e144e45d8d3c76"
+                    "params.yml:md5,4fd353560b2c3366515af2cc4d49957d"
                 ]
             ]
         ],
-        "timestamp": "2026-08-26T20:52:59.491320377",
+        "timestamp": "2026-08-18T15:13:18.571016",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     }
 }

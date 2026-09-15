@@ -4,7 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 include { paramsSummaryMap                } from 'plugin/nf-schema'
-include { QUARTONOTEBOOK                  } from '../modules/nf-core/quartonotebook/main'
+include { QUARTO_NOTEBOOK                  } from '../modules/nf-core/quarto/notebook/main'
 include { REPORTENVIRONMENT               } from '../modules/local/reportenvironment/main'
 include { STAGE_FILE                      } from '../modules/local/stage_file/main'
 include { MD5SUM                          } from '../modules/nf-core/md5sum/main'
@@ -67,7 +67,7 @@ workflow PROVENANCEREPORT {
             []
         }
 
-    QUARTONOTEBOOK (
+    QUARTO_NOTEBOOK (
         ch_quarto_input.notebook,
         ch_quarto_input.parameters,
         ch_quarto_input.input_files,
@@ -75,7 +75,7 @@ workflow PROVENANCEREPORT {
     )
 
     REPORTENVIRONMENT (
-        QUARTONOTEBOOK.out.runtime_environment
+        QUARTO_NOTEBOOK.out.runtime_environment
     )
 
     //
@@ -83,7 +83,7 @@ workflow PROVENANCEREPORT {
     //
     def ch_checksum_files = ch_samplesheet
         .map { _meta, input_file -> input_file }
-        .mix(QUARTONOTEBOOK.out.html.map { _meta, report_file -> report_file })
+        .mix(QUARTO_NOTEBOOK.out.html.map { _meta, report_file -> report_file })
         .collect()
         .map { files -> [[ id: 'provenancereport' ], files] }
 
@@ -95,8 +95,8 @@ workflow PROVENANCEREPORT {
     //
     // Collate and save software versions
     //
-    def quartonotebook_versions = QUARTONOTEBOOK.out.versions_quarto
-        .mix(QUARTONOTEBOOK.out.versions_papermill)
+    def quartonotebook_versions = QUARTO_NOTEBOOK.out.versions_quarto
+        .mix(QUARTO_NOTEBOOK.out.versions_papermill)
         .map { process, tool, version ->
             def trimmed_version = version?.toString()?.trim()
             // Optional tools may emit an empty eval value; omit them instead of reporting a blank version.
@@ -167,7 +167,7 @@ workflow PROVENANCEREPORT {
         REPORTENVIRONMENT.out.multiqc_r_session
     )
 
-    def ch_pipeline_outputs_rows = QUARTONOTEBOOK.out.html
+    def ch_pipeline_outputs_rows = QUARTO_NOTEBOOK.out.html
         .map { _meta, report ->
             [
                 file: report.getName(),
@@ -214,9 +214,9 @@ workflow PROVENANCEREPORT {
     versions       = ch_versions                                         // channel: [ path(versions.yml) ]
     multiqc_report = ch_multiqc_reports
     document       = STAGE_FILE.out.staged_file
-    reports        = QUARTONOTEBOOK.out.html.map      { _meta, html     -> html     }
-    notebook       = QUARTONOTEBOOK.out.notebook.map  { _meta, qmd      -> qmd      }
-    artifacts      = QUARTONOTEBOOK.out.artifacts.map { _meta, artifact -> artifact } // channel: [ val(meta), path(artifacts/*) ]
+    reports        = QUARTO_NOTEBOOK.out.html.map      { _meta, html     -> html     }
+    notebook       = QUARTO_NOTEBOOK.out.notebook.map  { _meta, qmd      -> qmd      }
+    artifacts      = QUARTO_NOTEBOOK.out.artifacts.map { _meta, artifact -> artifact } // channel: [ val(meta), path(artifacts/*) ]
     md5sum         = MD5SUM.out.checksum.map          { _meta, checksum -> checksum }
 }
 

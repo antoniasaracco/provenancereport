@@ -1,12 +1,14 @@
 nextflow_process {
 
-    name "Test Process QUARTONOTEBOOK"
+    name "Test Process QUARTO_NOTEBOOK"
     script "../main.nf"
-    process "QUARTONOTEBOOK"
+    process "QUARTO_NOTEBOOK"
+    config "./nextflow.config"
 
     tag "modules"
     tag "modules_nfcore"
-    tag "quartonotebook"
+    tag "quarto"
+    tag "quarto/notebook"
 
     test("test notebook - [qmd:r]") {
 
@@ -29,7 +31,6 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
-                    process.out.runtime_environment,
                     process.out.artifacts,
                     process.out.params_yaml
                 ).match() },
@@ -60,7 +61,6 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
-                    process.out.runtime_environment,
                     process.out.artifacts,
                     process.out.params_yaml
                 ).match() },
@@ -91,7 +91,6 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
-                    process.out.runtime_environment,
                     process.out.artifacts,
                     process.out.params_yaml
                 ).match() },
@@ -123,7 +122,6 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
-                    process.out.runtime_environment,
                     process.out.artifacts,
                     process.out.params_yaml
                 ).match() },
@@ -155,7 +153,6 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
-                    process.out.runtime_environment,
                     process.out.artifacts,
                     process.out.params_yaml
                 ).match() },
@@ -169,6 +166,13 @@ nextflow_process {
     test("test notebook - parametrized - [ipynb]") {
 
         when {
+            params {
+                // The Jupyter Notebook test need to explicitly execute the code
+                // in the notebook instead of just rendering the notebook to
+                // HTML (which is the default), in order to correctly output
+                // `versions.csv`.
+                module_args = '--execute'
+            }
             process {
                 """
                 input[0] = [
@@ -187,7 +191,6 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
-                    process.out.runtime_environment,
                     process.out.artifacts,
                     process.out.params_yaml
                 ).match() },
