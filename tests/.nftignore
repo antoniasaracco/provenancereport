@@ -1,5 +1,4 @@
 .DS_Store
-pipeline_info/*
 nf-prov
 nf-prov/*
 *.html
@@ -11,3 +10,4 @@ nextflow.config
 artifacts.csv
 multiqc_report.csv
 document.csv
+pipeline_info/*.{html,json,txt,yml}

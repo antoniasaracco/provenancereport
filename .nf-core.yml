@@ -1,14 +1,22 @@
 repository_type: pipeline
-nf_core_version: "4.1.0"
+
+nf_core_version: 4.1.0
+
 template:
   author: Alexander Peltzer, Gregor Sturm, Julian Schwab
-  description: A pipeline to produce provenance reports.
+  description: A simple provenance reporting pipeline
   force: false
   is_nfcore: true
   name: provenancereport
   org: nf-core
   outdir: .
   version: 1.0.0dev
+  skip_features:
+    - igenomes
+    - multiqc
+    - fastqc
+    - gpu
+
 lint:
   files_exist:
     - assets/multiqc_config.yml
@@ -17,6 +25,7 @@ lint:
     - conf/igenomes_ignored.config
   multiqc_config: false
   files_unchanged:
+    - assets/sendmail_template.txt
     - .github/workflows/branch.yml
     - .github/workflows/linting.yml
     - .github/PULL_REQUEST_TEMPLATE.md
