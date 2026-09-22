@@ -7,7 +7,7 @@
                     "quarto": "1.9.38"
                 },
                 "Workflow": {
-                    "nf-core/provenancereport": "v1.0.0dev"
+                    "nf-core/provenancereport": "v1.0.0"
                 }
             },
             [
@@ -48,7 +48,7 @@
                 "external_rds_report.qmd:md5,33c6e034d026f8d8d619711bec521665"
             ]
         ],
-        "timestamp": "2026-09-15T13:09:37.154798919",
+        "timestamp": "2026-09-22T15:00:48.8552863",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
