@@ -1,0 +1,31 @@
+nextflow_process {
+
+    name "Test Process STAGE_FILE"
+    script "../main.nf"
+    process "STAGE_FILE"
+
+    tag "modules"
+    tag "modules_local"
+    tag "stage_file"
+
+    test("stage a document") {
+
+        when {
+            process {
+                """
+                input[0] = file("${projectDir}/tests/assets/review_signoff.md")
+                """
+            }
+        }
+
+        then {
+            def staged_file = path(process.out.staged_file.first())
+            assertAll(
+                { assert process.success },
+                { assert staged_file.fileName.toString() == "review_signoff.md" },
+                { assert staged_file.text == path("${projectDir}/tests/assets/review_signoff.md").text },
+                { assert snapshot(process.out).match() },
+            )
+        }
+    }
+}
