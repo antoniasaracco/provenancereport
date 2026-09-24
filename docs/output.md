@@ -121,7 +121,7 @@ The **Report Runtime Environment** table identifies the runtime inherited from `
 <summary>Output files</summary>
 
 - `pipeline_info/manifest_<timestamp>.bco.json`: BioCompute Object provenance report.
-- `pipeline_info/ro-crate-metadata_<timestamp>.json`: Workflow Run RO-Crate metadata at the top level of the results directory.
+- `pipeline_info/ro-crate-metadata_<timestamp>.json`: Workflow Run RO-Crate metadata.
 - Supporting Workflow Run RO-Crate files at the results root, including the pipeline `README.md`, `main.nf`, `nextflow.config`, `nextflow_schema.json`, and `samplesheet.csv`.
 
 </details>
