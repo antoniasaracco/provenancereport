@@ -26,7 +26,6 @@ graph LR
         md5sum[MD5SUM]
         reportenvironment[REPORTENVIRONMENT]
         multiqc[MULTIQC]
-        stage_file[STAGE_FILE]
         nfprov[nf-prov plugin]
     end
 
@@ -53,5 +52,4 @@ graph LR
     nfprov -->|report| bco
     nfprov -->|report| rocrate
 
-    review_document -->|review| stage_file
-    stage_file -->|review| review_output
+    review_document -->|review| review_output
