@@ -6,7 +6,6 @@
 include { paramsSummaryMap                } from 'plugin/nf-schema'
 include { QUARTO_NOTEBOOK                  } from '../modules/nf-core/quarto/notebook/main'
 include { REPORTENVIRONMENT               } from '../modules/local/reportenvironment/main'
-include { STAGE_FILE                      } from '../modules/local/stage_file/main'
 include { MD5SUM                          } from '../modules/nf-core/md5sum/main'
 include { MULTIQC                         } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMultiqc            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -208,12 +207,13 @@ workflow PROVENANCEREPORT {
             .mix(MULTIQC.out.data.map   { _meta, data   -> data   })
             .mix(MULTIQC.out.plots.map  { _meta, plots  -> plots  })
 
-    STAGE_FILE (ch_document)
+    // Workflow outputs only publish files materialized in the work directory.
+    def ch_publishable_document = ch_document.collectFile()
 
     emit:
     versions       = ch_versions                                         // channel: [ path(versions.yml) ]
     multiqc_report = ch_multiqc_reports
-    document       = STAGE_FILE.out.staged_file
+    document       = ch_publishable_document
     reports        = QUARTO_NOTEBOOK.out.html.map      { _meta, html     -> html     }
     notebook       = QUARTO_NOTEBOOK.out.notebook.map  { _meta, qmd      -> qmd      }
     artifacts      = QUARTO_NOTEBOOK.out.artifacts.map { _meta, artifact -> artifact } // channel: [ val(meta), path(artifacts/*) ]
