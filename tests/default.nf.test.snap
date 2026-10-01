@@ -17,8 +17,10 @@
                 }
             },
             [
+                "README.md:md5,695b8559601bb3634871a9418ae6b463",
                 "artifacts.csv",
                 "document.csv",
+                "main.nf:md5,030783612aa8752744826150e24170ce",
                 "md5sum",
                 "md5sum/provenancereport.md5",
                 "multiqc",
@@ -36,23 +38,26 @@
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
                 "multiqc_report.csv",
+                "nextflow.config:md5,5d1dff063f298e924e9977cece4e3de3",
+                "nextflow_schema.json:md5,c35ff64fe05be537073af154011a1e10",
                 "pipeline_info",
-                "pipeline_info/README.md",
-                "pipeline_info/main.nf",
-                "pipeline_info/nextflow.config",
                 "pipeline_info/nf_core_provenancereport_software_mqc_versions.yml",
-                "pipeline_info/samplesheet.csv",
                 "quartonotebook",
                 "quartonotebook/artifacts",
                 "quartonotebook/artifacts/provenance_report_input_files.tsv",
                 "quartonotebook/artifacts/provenance_report_summary.txt",
                 "quartonotebook/provenance_report.html",
-                "quartonotebook/provenance_report.qmd"
+                "quartonotebook/provenance_report.qmd",
+                "samplesheet.csv"
             ],
             [
+                "README.md:md5,695b8559601bb3634871a9418ae6b463",
+                "main.nf:md5,030783612aa8752744826150e24170ce",
+                "nextflow_schema.json:md5,c35ff64fe05be537073af154011a1e10",
                 "provenance_report_input_files.tsv:md5,1458dc07273f8a570beae2b5f4358a49",
                 "provenance_report_summary.txt:md5,b32c187edd9b5ec9c088a0d2a41ff01d",
-                "provenance_report.qmd:md5,4fd8ffa820d1e7620135853517275d66"
+                "provenance_report.qmd:md5,4fd8ffa820d1e7620135853517275d66",
+                "samplesheet.csv:md5,760077fbeb3954e468d83244325f4ade"
             ]
         ],
         "timestamp": "2026-09-22T14:51:05.758245919",
@@ -79,8 +84,10 @@
                 }
             },
             [
+                "README.md:md5,695b8559601bb3634871a9418ae6b463",
                 "artifacts.csv",
                 "document.csv",
+                "main.nf:md5,030783612aa8752744826150e24170ce",
                 "md5sum",
                 "md5sum/provenancereport.md5",
                 "multiqc",
@@ -98,26 +105,28 @@
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
                 "multiqc_report.csv",
+                "nextflow.config:md5,5d1dff063f298e924e9977cece4e3de3",
+                "nextflow_schema.json:md5,c35ff64fe05be537073af154011a1e10",
                 "pipeline_info",
-                "pipeline_info/README.md",
-                "pipeline_info/main.nf",
-                "pipeline_info/nextflow.config",
                 "pipeline_info/nf_core_provenancereport_software_mqc_versions.yml",
-                "pipeline_info/review_signoff.md",
-                "pipeline_info/samplesheet.csv",
                 "quartonotebook",
                 "quartonotebook/artifacts",
                 "quartonotebook/artifacts/provenance_report_input_files.tsv",
                 "quartonotebook/artifacts/provenance_report_summary.txt",
                 "quartonotebook/provenance_report.html",
                 "quartonotebook/provenance_report.qmd",
-                "review_signoff.md"
+                "review_signoff.md",
+                "samplesheet.csv"
             ],
             [
+                "README.md:md5,695b8559601bb3634871a9418ae6b463",
+                "main.nf:md5,030783612aa8752744826150e24170ce",
+                "nextflow_schema.json:md5,c35ff64fe05be537073af154011a1e10",
                 "provenance_report_input_files.tsv:md5,1458dc07273f8a570beae2b5f4358a49",
                 "provenance_report_summary.txt:md5,b32c187edd9b5ec9c088a0d2a41ff01d",
                 "provenance_report.qmd:md5,4fd8ffa820d1e7620135853517275d66",
-                "review_signoff.md:md5,0662c5a0325d10cdcd542d83dc2d300b"
+                "review_signoff.md:md5,0662c5a0325d10cdcd542d83dc2d300b",
+                "samplesheet.csv:md5,760077fbeb3954e468d83244325f4ade"
             ]
         ],
         "timestamp": "2026-09-22T14:51:36.846376316",
