@@ -4,7 +4,7 @@ nf_core_version: 4.1.0
 
 template:
   author: Alexander Peltzer, Gregor Sturm, Julian Schwab
-  description: A simple provenance reporting pipeline
+  description: Generate reproducible Quarto reports together with an audit trail of inputs, checksums, software versions, runtime environments, and provenance metadata.
   force: false
   is_nfcore: true
   name: provenancereport
