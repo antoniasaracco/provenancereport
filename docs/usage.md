@@ -106,13 +106,15 @@ expression_xlsx,input/expression_sample.xlsx
 expression_csv,input/expression_sample.csv
 ```
 
-Currently this is not valid for the current staging layout because both rows would be staged as `expression.xlsx`:
+This is rejected because both rows would be staged as `expression.xlsx`:
 
 ```csv title="samplesheet.csv"
 id,path
 cohort_a,cohort_a/input/expression.xlsx
 cohort_b,cohort_b/input/expression.xlsx
 ```
+
+Input paths must not contain commas because the staged basenames are passed to the notebook as the comma-separated `params$input_files` value.
 
 ## Review document input
 

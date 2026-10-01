@@ -39,6 +39,14 @@ workflow PROVENANCEREPORT {
             def input_ids = rows.collect { meta, _input_file -> meta.id }
             def input_files = rows.collect { _meta, input_file -> input_file }
             def input_file_names = input_files.collect { input_file -> input_file.getName() }
+            def duplicate_input_file_names = input_file_names
+                .countBy { input_file_name -> input_file_name }
+                .findAll { _input_file_name, count -> count > 1 }
+                .keySet()
+                .sort()
+            if (duplicate_input_file_names) {
+                error "Input files must have unique basenames because they are staged into the same directory. Duplicate basenames: ${duplicate_input_file_names.join(', ')}"
+            }
             def report_meta = [
                 id: report_notebook.baseName,
                 report_file_name: report_notebook.baseName,
