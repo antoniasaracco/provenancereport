@@ -77,11 +77,12 @@ workflow PROVENANCEREPORT {
     )
 
     //
-    // Calculate checksums for every samplesheet input and the rendered report
+    // Calculate checksums for every samplesheet input, the rendered report, and the optional document
     //
     def ch_checksum_files = ch_samplesheet
         .map { _meta, input_file -> input_file }
         .mix(QUARTO_NOTEBOOK.out.html.map { _meta, report_file -> report_file })
+        .mix(ch_document)
         .collect()
         .map { files -> [[ id: 'provenancereport' ], files] }
 

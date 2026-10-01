@@ -55,12 +55,14 @@ nextflow_pipeline {
             // stable_content: All files in ${params.outdir}/ with stable content
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             def multiqc_report = path("$outputDir/multiqc/multiqc_report.html")
+            def checksum_file = path("$outputDir/md5sum/provenancereport.md5")
             def ro_crate = path("$outputDir/ro-crate-metadata.json")
             assert workflow.success
             assertAll(
                 { assert stable_path.findAll { path -> path.startsWith("quartonotebook/") && path.endsWith(".html") }.size() == 1 },
                 { assert ro_crate.exists() },
                 { assert ro_crate.text.contains('review_signoff.md') },
+                { assert checksum_file.text.contains('0662c5a0325d10cdcd542d83dc2d300b  review_signoff.md') },
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_provenancereport_software_mqc_versions.yml"),
