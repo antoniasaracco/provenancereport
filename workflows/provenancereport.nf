@@ -29,7 +29,6 @@ workflow PROVENANCEREPORT {
 
     main:
 
-    def ch_versions = channel.empty()
     ch_multiqc_reports = channel.empty()
 
     ch_quarto_input = ch_samplesheet
@@ -94,13 +93,26 @@ workflow PROVENANCEREPORT {
     //
     // Collate and save software versions
     //
-    def quartonotebook_versions = QUARTO_NOTEBOOK.out.versions_quarto
-        .mix(QUARTO_NOTEBOOK.out.versions_papermill)
+    def ch_versions = channel.topic('versions')
+        .distinct()
+        .flatMap { entry ->
+            if (entry instanceof Path) {
+                def version_data = new org.yaml.snakeyaml.Yaml().load(entry)
+                return version_data instanceof Map
+                    ? version_data.collectMany { process, versions ->
+                        versions instanceof Map
+                            ? versions.collect { tool, version -> [ process, tool, version ] }
+                            : []
+                    }
+                    : []
+            }
+            [ entry ]
+        }
         .map { process, tool, version ->
             def trimmed_version = version?.toString()?.trim()
-            // Optional tools may emit an empty eval value; omit them instead of reporting a blank version.
+            def process_name = process.toString()
             trimmed_version
-                ? [ process.tokenize(':')[-1], "  ${tool}: ${trimmed_version}" ]
+                ? [ process_name[process_name.lastIndexOf(':')+1..-1], "  ${tool}: ${trimmed_version}" ]
                 : null
         }
         .groupTuple(by:0)
@@ -108,11 +120,15 @@ workflow PROVENANCEREPORT {
             tool_versions.unique().sort()
             "${process}:\n${tool_versions.join('\n')}"
         }
-
-    def ch_collated_versions = softwareVersionsToYAML(ch_versions)
-        .mix(quartonotebook_versions)
         .collectFile(
-            storeDir: "${outdir}/pipeline_info",
+            name: 'versions.yml',
+            sort: true,
+            newLine: true
+        )
+
+    // MultiQC consumes the collected versions, so its own version is added to the final file afterwards.
+    def ch_versions_for_multiqc = softwareVersionsToYAML(ch_versions)
+        .collectFile(
             name: 'nf_core_'  +  'provenancereport_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true
@@ -122,7 +138,7 @@ workflow PROVENANCEREPORT {
     // MODULE: MultiQC
     //
     def ch_multiqc_files = channel.empty()
-    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
+    ch_multiqc_files = ch_multiqc_files.mix(ch_versions_for_multiqc)
     ch_multiqc_files = ch_multiqc_files.mix(
         ch_input.collectFile(name: 'samplesheet.csv')
     )
@@ -202,6 +218,26 @@ workflow PROVENANCEREPORT {
         }
     )
 
+    def multiqc_versions_string = MULTIQC.out.versions
+        .map { process, tool, version ->
+            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: ${version}" ]
+        }
+        .groupTuple(by:0)
+        .map { process, tool_versions ->
+            tool_versions.unique().sort()
+            "${process}:\n${tool_versions.join('\n')}"
+        }
+
+    def ch_collated_versions = ch_versions_for_multiqc
+        .map { versions_file -> versions_file.text.trim() }
+        .mix(multiqc_versions_string)
+        .collectFile(
+            storeDir: "${outdir}/pipeline_info",
+            name: 'nf_core_'  +  'provenancereport_software_'  + 'mqc_'  + 'versions.yml',
+            sort: true,
+            newLine: true
+        )
+
     ch_multiqc_reports = ch_multiqc_reports
             .mix(MULTIQC.out.report.map { _meta, report -> report })
             .mix(MULTIQC.out.data.map   { _meta, data   -> data   })
@@ -211,7 +247,7 @@ workflow PROVENANCEREPORT {
     def ch_publishable_document = ch_document.collectFile()
 
     emit:
-    versions       = ch_versions                                         // channel: [ path(versions.yml) ]
+    versions       = ch_collated_versions                                // channel: [ path(versions.yml) ]
     multiqc_report = ch_multiqc_reports
     document       = ch_publishable_document
     reports        = QUARTO_NOTEBOOK.out.html.map      { _meta, html     -> html     }

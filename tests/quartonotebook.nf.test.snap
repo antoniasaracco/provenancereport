@@ -2,7 +2,14 @@
     "-profile test with custom notebook": {
         "content": [
             {
+                "MD5SUM": {
+                    "md5sum": 9.5
+                },
+                "MULTIQC": {
+                    "multiqc": 1.35
+                },
                 "QUARTO_NOTEBOOK": {
+                    "R": "4.4.3",
                     "papermill": "2.6.0",
                     "quarto": "1.7.31"
                 },
