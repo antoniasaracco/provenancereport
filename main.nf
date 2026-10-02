@@ -139,7 +139,8 @@ output {
         path 'md5sum'
         mode params.publish_dir_mode
     }
-    document{
+    document {
+        enabled params.document != null
         mode params.publish_dir_mode
         index {
             path 'document.csv'

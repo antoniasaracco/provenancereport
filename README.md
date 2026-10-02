@@ -61,7 +61,7 @@ counts,counts.tsv
 metadata,metadata.tsv
 ```
 
-Each row represents exactly one input file. The `id` value is included in `params$input_ids`, and `path` must point to a single file.
+Each row represents exactly one input file. The `id` value is included in `params$meta$input_ids`, and `path` must point to a single file.
 
 Now, you can run the pipeline using:
 
