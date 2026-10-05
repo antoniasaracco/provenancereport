@@ -18,10 +18,9 @@
                 }
             },
             [
-                "README.md:md5,695b8559601bb3634871a9418ae6b463",
+                "README.md:md5,6954d70e58f31256f01a03a7fc66ed70",
                 "artifacts.csv",
-                "document.csv",
-                "main.nf:md5,030783612aa8752744826150e24170ce",
+                "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
                 "md5sum",
                 "md5sum/provenancereport.md5",
                 "multiqc",
@@ -39,8 +38,8 @@
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
                 "multiqc_report.csv",
-                "nextflow.config:md5,5d1dff063f298e924e9977cece4e3de3",
-                "nextflow_schema.json:md5,c35ff64fe05be537073af154011a1e10",
+                "nextflow.config:md5,86567217d8527a2d1544c3d9e8c09806",
+                "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "pipeline_info",
                 "pipeline_info/nf_core_provenancereport_software_mqc_versions.yml",
                 "quartonotebook",
@@ -51,9 +50,9 @@
                 "samplesheet_quartonotebook.csv"
             ],
             [
-                "README.md:md5,695b8559601bb3634871a9418ae6b463",
-                "main.nf:md5,030783612aa8752744826150e24170ce",
-                "nextflow_schema.json:md5,c35ff64fe05be537073af154011a1e10",
+                "README.md:md5,6954d70e58f31256f01a03a7fc66ed70",
+                "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
+                "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "artifact.txt:md5,b10a8db164e0754105b7a99be72e3fe5",
                 "quarto_r.qmd:md5,a6a7392a32a4a2f5637fd8245b936031",
                 "samplesheet_quartonotebook.csv:md5,33cd9804d52f8ff96e2244df29e5cd2a"
