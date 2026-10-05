@@ -17,6 +17,8 @@ template:
     - gpu
 
 lint:
+  nf_test_content:
+    - tests/input_validation.nf.test
   files_exist:
     - assets/multiqc_config.yml
     - .github/workflows/linting_comment.yml
