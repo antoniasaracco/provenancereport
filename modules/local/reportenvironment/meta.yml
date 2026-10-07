@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "reportenvironment"
-description: Collect the report environment and resolve package versions from Quarto inspection metadata
+description: Collect runtime environment metadata for the generated report
 keywords:
   - report
   - provenance
@@ -8,55 +8,35 @@ keywords:
   - container
 tools:
   - reportenvironment:
-      description: Collect runtime metadata and resolve packages referenced by an inspected Quarto report
+      description: Collect the report process, container, R session information, and Python version
       homepage: https://github.com/nf-core/provenancereport
       documentation: https://nf-co.re/provenancereport
       licence: ["MIT"]
       identifier: ""
 input:
   - - runtime_process:
-        type: string
-        description: Source process emitted by QUARTO_NOTEBOOK
+        type: map
+        description: |
+          Source process emitted by QUARTO_NOTEBOOK
     - runtime_backend:
-        type: string
-        description: Runtime backend emitted by QUARTO_NOTEBOOK
+        type: map
+        description: |
+          Runtime backend emitted by QUARTO_NOTEBOOK
     - runtime_reference:
-        type: string
-        description: Runtime reference emitted by QUARTO_NOTEBOOK
-    - inspection:
-        type: file
-        description: JSON metadata produced by `quarto inspect`
-        pattern: "*.inspect.json"
-        ontologies:
-          - edam: http://edamontology.org/format_3464
-    - notebook_versions:
-        type: file
-        description: Optional package versions written by the rendered notebook as package,version rows
-        pattern: "versions.csv"
-        ontologies:
-          - edam: http://edamontology.org/format_3752
+        type: map
+        description: |
+          Runtime reference emitted by QUARTO_NOTEBOOK
 output:
   multiqc_table:
-    - runtime_environment_mqc.tsv:
-        type: file
-        description: MultiQC custom-data table describing the report runtime environment
-        pattern: "runtime_environment_mqc.tsv"
+    - - runtime_environment_mqc.tsv:
+          type: file
+          description: MultiQC custom-data table describing the report runtime environment
+          pattern: "runtime_environment_mqc.tsv"
   multiqc_r_session:
-    - r_runtime_session_info_mqc.yaml:
-        type: file
-        description: MultiQC section containing sessionInfo() from a separate R process in the report runtime
-        pattern: "r_runtime_session_info_mqc.yaml"
-  versions:
-    - versions.yml:
-        type: file
-        description: R and package versions resolved in the report runtime
-        pattern: "versions.yml"
-topics:
-  versions:
-    - versions.yml:
-        type: file
-        description: R and package versions resolved in the report runtime
-        pattern: "versions.yml"
+    - - r_session_info_mqc.yaml:
+          type: file
+          description: MultiQC custom-content HTML section containing full R session information
+          pattern: "r_session_info_mqc.yaml"
 authors:
   - "@antoniasaracco"
 maintainers:

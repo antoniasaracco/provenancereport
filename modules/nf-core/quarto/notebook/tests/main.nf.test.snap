@@ -35,17 +35,12 @@
                 "5": [
                     [
                         "QUARTO_NOTEBOOK",
-                        "singularity",
-                        "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
+                        "podman",
+                        "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
                     ]
                 ],
                 "6": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "versions.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "7": [
                     [
@@ -83,14 +78,6 @@
                         "quarto_r.qmd:md5,a6a7392a32a4a2f5637fd8245b936031"
                     ]
                 ],
-                "notebook_versions": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "versions.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
-                    ]
-                ],
                 "params_yaml": [
                     [
                         {
@@ -102,9 +89,12 @@
                 "runtime_environment": [
                     [
                         "QUARTO_NOTEBOOK",
-                        "singularity",
-                        "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
+                        "podman",
+                        "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
                     ]
+                ],
+                "versions": [
+                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "versions_papermill": [
                     [
@@ -131,6 +121,9 @@
     "test notebook - [qmd:r]": {
         "content": [
             {
+                "versions": [
+                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
+                ],
                 "versions_papermill": [
                     [
                         "QUARTO_NOTEBOOK",
@@ -157,16 +150,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "singularity",
-                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
-                ]
-            ],
-            [
-                [
-                    {
-                        "id": "test"
-                    },
-                    "versions.csv:md5,d72f61e5b874e3e8d92c8a33f5a0d587"
+                    "podman",
+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
                 ]
             ],
             [
@@ -187,6 +172,9 @@
     "test notebook - parametrized - [qmd:python]": {
         "content": [
             {
+                "versions": [
+                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+                ],
                 "versions_papermill": [
                     [
                         "QUARTO_NOTEBOOK",
@@ -213,16 +201,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "singularity",
-                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
-                ]
-            ],
-            [
-                [
-                    {
-                        "id": "test"
-                    },
-                    "versions.csv:md5,e5d7ddb4d1c9fbdf48dec0c0ace31725"
+                    "podman",
+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
                 ]
             ],
             [
@@ -243,6 +223,9 @@
     "test notebook - parametrized - [rmd]": {
         "content": [
             {
+                "versions": [
+                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
+                ],
                 "versions_papermill": [
                     [
                         "QUARTO_NOTEBOOK",
@@ -269,16 +252,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "singularity",
-                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
-                ]
-            ],
-            [
-                [
-                    {
-                        "id": "test"
-                    },
-                    "versions.csv:md5,d72f61e5b874e3e8d92c8a33f5a0d587"
+                    "podman",
+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
                 ]
             ],
             [
@@ -299,6 +274,9 @@
     "test notebook - parametrized - [ipynb]": {
         "content": [
             {
+                "versions": [
+                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+                ],
                 "versions_papermill": [
                     [
                         "QUARTO_NOTEBOOK",
@@ -325,16 +303,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "singularity",
-                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
-                ]
-            ],
-            [
-                [
-                    {
-                        "id": "test"
-                    },
-                    "versions.csv:md5,e5d7ddb4d1c9fbdf48dec0c0ace31725"
+                    "podman",
+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
                 ]
             ],
             [
@@ -355,6 +325,9 @@
     "test notebook - [qmd:python]": {
         "content": [
             {
+                "versions": [
+                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+                ],
                 "versions_papermill": [
                     [
                         "QUARTO_NOTEBOOK",
@@ -381,16 +354,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "singularity",
-                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
-                ]
-            ],
-            [
-                [
-                    {
-                        "id": "test"
-                    },
-                    "versions.csv:md5,e5d7ddb4d1c9fbdf48dec0c0ace31725"
+                    "podman",
+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
                 ]
             ],
             [
@@ -411,6 +376,9 @@
     "test notebook - parametrized - [qmd:r]": {
         "content": [
             {
+                "versions": [
+                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
+                ],
                 "versions_papermill": [
                     [
                         "QUARTO_NOTEBOOK",
@@ -437,16 +405,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "singularity",
-                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
-                ]
-            ],
-            [
-                [
-                    {
-                        "id": "test"
-                    },
-                    "versions.csv:md5,d72f61e5b874e3e8d92c8a33f5a0d587"
+                    "podman",
+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
                 ]
             ],
             [
