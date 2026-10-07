@@ -1,8 +1,8 @@
 {
     "collect report runtime environment - none": {
         "content": [
-            "field\tvalue\nProcess\tREPORTENVIRONMENT\nRuntime source process\tQUARTONOTEBOOK\nRuntime backend\tnone\nRuntime reference\tNot configured\nContainer engine\t<ENGINE>\nPython\t<VERSION>\n",
-            "id: 'nf-core-provenancereport-r-session-info'\ndescription: 'Full R sessionInfo() output from the report rendering environment.'\nsection_name: 'R sessionInfo()'\nplot_type: 'html'\ndata: |\n  <pre style=\"white-space: pre-wrap; overflow-x: auto; max-height: 32rem;\">\n  <R_SESSION_INFO>\n  </pre>\n"
+            "field\tvalue\nProcess\tREPORTENVIRONMENT\nRuntime source process\tQUARTONOTEBOOK\nRuntime backend\tnone\nRuntime reference\tNot configured\nQuarto engine\tknitr\nContainer engine\t<ENGINE>\nPython\t<VERSION>\nPackage version source\tNotebook versions.csv (authoritative)\n",
+            "id: 'nf-core-provenancereport-r-runtime-session-info'\ndescription: 'R sessionInfo() collected in a separate process inside the report runtime.'\nsection_name: 'R runtime sessionInfo()'\nplot_type: 'html'\ndata: |\n  <p><strong>Scope:</strong> This describes a separate R process in the report runtime. It does not show packages loaded during notebook execution; use the Software Versions section for those versions.</p>\n  <pre style=\"white-space: pre-wrap; overflow-x: auto; max-height: 32rem;\">\n  <R_SESSION_INFO>\n  </pre>\n"
         ],
         "timestamp": "2026-08-26T20:51:36.422137565",
         "meta": {
@@ -12,8 +12,8 @@
     },
     "collect report runtime environment - container": {
         "content": [
-            "field\tvalue\nProcess\tREPORTENVIRONMENT\nRuntime source process\tQUARTO_NOTEBOOK\nRuntime backend\tdocker\nRuntime reference\tcommunity.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665\nContainer engine\t<ENGINE>\nPython\t<VERSION>\n",
-            "id: 'nf-core-provenancereport-r-session-info'\ndescription: 'Full R sessionInfo() output from the report rendering environment.'\nsection_name: 'R sessionInfo()'\nplot_type: 'html'\ndata: |\n  <pre style=\"white-space: pre-wrap; overflow-x: auto; max-height: 32rem;\">\n  <R_SESSION_INFO>\n  </pre>\n"
+            "field\tvalue\nProcess\tREPORTENVIRONMENT\nRuntime source process\tQUARTO_NOTEBOOK\nRuntime backend\tdocker\nRuntime reference\tcommunity.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665\nQuarto engine\tknitr\nContainer engine\t<ENGINE>\nPython\t<VERSION>\nPackage version source\tNotebook versions.csv (authoritative)\n",
+            "id: 'nf-core-provenancereport-r-runtime-session-info'\ndescription: 'R sessionInfo() collected in a separate process inside the report runtime.'\nsection_name: 'R runtime sessionInfo()'\nplot_type: 'html'\ndata: |\n  <p><strong>Scope:</strong> This describes a separate R process in the report runtime. It does not show packages loaded during notebook execution; use the Software Versions section for those versions.</p>\n  <pre style=\"white-space: pre-wrap; overflow-x: auto; max-height: 32rem;\">\n  <R_SESSION_INFO>\n  </pre>\n"
         ],
         "timestamp": "2026-08-26T20:51:20.558085891",
         "meta": {
@@ -23,8 +23,8 @@
     },
     "collect report runtime environment - conda": {
         "content": [
-            "field\tvalue\nProcess\tREPORTENVIRONMENT\nRuntime source process\tQUARTONOTEBOOK\nRuntime backend\tconda\nRuntime reference\t<PROJECT_DIR>/modules/local/reportenvironment/tests/assets/environment.yml\nContainer engine\t<ENGINE>\nPython\t<VERSION>\n",
-            "id: 'nf-core-provenancereport-r-session-info'\ndescription: 'Full R sessionInfo() output from the report rendering environment.'\nsection_name: 'R sessionInfo()'\nplot_type: 'html'\ndata: |\n  <pre style=\"white-space: pre-wrap; overflow-x: auto; max-height: 32rem;\">\n  <R_SESSION_INFO>\n  </pre>\n"
+            "field\tvalue\nProcess\tREPORTENVIRONMENT\nRuntime source process\tQUARTONOTEBOOK\nRuntime backend\tconda\nRuntime reference\t<PROJECT_DIR>/modules/local/reportenvironment/tests/assets/environment.yml\nQuarto engine\tknitr\nContainer engine\t<ENGINE>\nPython\t<VERSION>\nPackage version source\tNotebook versions.csv (authoritative)\n",
+            "id: 'nf-core-provenancereport-r-runtime-session-info'\ndescription: 'R sessionInfo() collected in a separate process inside the report runtime.'\nsection_name: 'R runtime sessionInfo()'\nplot_type: 'html'\ndata: |\n  <p><strong>Scope:</strong> This describes a separate R process in the report runtime. It does not show packages loaded during notebook execution; use the Software Versions section for those versions.</p>\n  <pre style=\"white-space: pre-wrap; overflow-x: auto; max-height: 32rem;\">\n  <R_SESSION_INFO>\n  </pre>\n"
         ],
         "timestamp": "2026-08-26T20:51:28.491881966",
         "meta": {

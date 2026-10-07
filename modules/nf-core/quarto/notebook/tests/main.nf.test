@@ -33,6 +33,7 @@ nextflow_process {
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
                     process.out.runtime_environment,
+                    process.out.notebook_versions,
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -64,6 +65,7 @@ nextflow_process {
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
                     process.out.runtime_environment,
+                    process.out.notebook_versions,
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -95,6 +97,7 @@ nextflow_process {
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
                     process.out.runtime_environment,
+                    process.out.notebook_versions,
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -127,6 +130,7 @@ nextflow_process {
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
                     process.out.runtime_environment,
+                    process.out.notebook_versions,
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -159,6 +163,7 @@ nextflow_process {
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
                     process.out.runtime_environment,
+                    process.out.notebook_versions,
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -198,6 +203,7 @@ nextflow_process {
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
                     process.out.runtime_environment,
+                    process.out.notebook_versions,
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World') } },

@@ -11,7 +11,7 @@ report_section_order:
     order: 99998
   runtime_environment:
     order: 99997
-  "nf-core-provenancereport-r-session-info":
+  "nf-core-provenancereport-r-runtime-session-info":
     order: 99996
   "nf-core-provenancereport-methods-description":
     order: -1000
@@ -29,7 +29,7 @@ custom_content:
     - file_checksums
     - pipeline_outputs
     - runtime_environment
-    - "nf-core-provenancereport-r-session-info"
+    - "nf-core-provenancereport-r-runtime-session-info"
 
 custom_data:
   input_samplesheet:

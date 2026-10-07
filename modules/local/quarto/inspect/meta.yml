@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "quarto_inspect"
+description: Inspect a Quarto document and emit its resolved metadata
+keywords:
+  - quarto
+  - inspect
+  - report
+  - provenance
+tools:
+  - quarto:
+      description: An open-source scientific and technical publishing system
+      homepage: https://quarto.org/
+      documentation: https://quarto.org/docs/cli/inspect.html
+      tool_dev_url: https://github.com/quarto-dev/quarto-cli
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing report information, for example `[ id:'report' ]`
+    - notebook:
+        type: file
+        description: Quarto document to inspect
+        pattern: "*.{qmd,Rmd,ipynb}"
+        ontologies: []
+output:
+  inspection:
+    - - meta:
+          type: map
+          description: Groovy Map containing report information
+      - ${prefix}.inspect.json:
+          type: file
+          description: Resolved Quarto document metadata and execution engine
+          pattern: "*.inspect.json"
+          ontologies:
+            - edam: http://edamontology.org/format_3464
+  versions_quarto:
+    - - ${task.process}:
+          type: string
+          description: Process name
+      - quarto:
+          type: string
+          description: Tool name
+      - quarto -v:
+          type: eval
+          description: Quarto version
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: Process name
+      - quarto:
+          type: string
+          description: Tool name
+      - quarto -v:
+          type: eval
+          description: Quarto version
+authors:
+  - "@antoniasaracco"
+maintainers:
+  - "@antoniasaracco"

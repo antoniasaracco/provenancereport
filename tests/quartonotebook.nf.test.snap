@@ -3,10 +3,13 @@
         "content": [
             {
                 "MD5SUM": {
-                    "md5sum": 9.5
+                    "md5sum": "9.5"
                 },
                 "MULTIQC": {
                     "multiqc": 1.35
+                },
+                "QUARTO_INSPECT": {
+                    "quarto": "1.7.31"
                 },
                 "QUARTO_NOTEBOOK": {
                     "R": "4.4.3",
@@ -18,7 +21,7 @@
                 }
             },
             [
-                "README.md:md5,6954d70e58f31256f01a03a7fc66ed70",
+                "README.md:md5,cce7e3ce57322421769f06b47248663f",
                 "artifacts.csv",
                 "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
                 "md5sum",
@@ -50,7 +53,7 @@
                 "samplesheet_quartonotebook.csv"
             ],
             [
-                "README.md:md5,6954d70e58f31256f01a03a7fc66ed70",
+                "README.md:md5,cce7e3ce57322421769f06b47248663f",
                 "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "artifact.txt:md5,b10a8db164e0754105b7a99be72e3fe5",

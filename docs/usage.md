@@ -128,17 +128,18 @@ When set, the pipeline stages this file into the results and adds it to the "Pip
 
 ## How the pipeline works
 
-The main workflow performs nine steps:
+The main workflow performs ten steps:
 
 1. `PIPELINE_INITIALISATION` validates `--input` with the `nf-schema` plugin and resolves each `path` entry as a single file.
 2. The workflow selects the notebook using `--notebook`, or the bundled `assets/provenance_report.qmd` if `--notebook` is unset.
-3. `QUARTO_NOTEBOOK` renders one Quarto HTML report using all samplesheet rows. The process receives `[meta, notebook]`, a parameter map, and the actual input files as a plain path channel. Its official eval outputs provide versions for software present in its runtime environment; empty version values are discarded.
-4. `MD5SUM` calculates MD5 checksums for every samplesheet input, the rendered Quarto HTML report, and the review document when `--document` is provided.
-5. `REPORTENVIRONMENT` receives the resolved `QUARTO_NOTEBOOK` runtime metadata and inherits the matching container image or Conda environment when one is configured. It captures the runtime backend, runtime reference, `R sessionInfo()`, and Python version. Missing R or Python installations are reported as unavailable without failing the run.
-6. If `--document` is set, the workflow publishes the supplied review file with the results.
-7. `MULTIQC` collates the input samplesheet, file checksums, pipeline outputs, workflow parameters, software versions, runtime-environment information, and Nextflow execution profile.
-8. The `nf-prov` plugin generates BCO and Workflow Run RO-Crate provenance records.
-9. The workflow publishes the Quarto and MultiQC reports, report artifacts, checksums, the optional review document, and standard pipeline metadata under `pipeline_info/`.
+3. `QUARTO_INSPECT` only runs `quarto inspect` and passes its metadata JSON to `REPORTENVIRONMENT`.
+4. `QUARTO_NOTEBOOK` renders one Quarto HTML report using all samplesheet rows and passes through an optional `versions.csv` written by the notebook. It does not modify the source notebook.
+5. `MD5SUM` calculates MD5 checksums for every samplesheet input, the rendered Quarto HTML report, and the review document when `--document` is provided.
+6. `REPORTENVIRONMENT` receives the inspection JSON and resolved `QUARTO_NOTEBOOK` runtime metadata. It inherits the matching container image or Conda environment, uses a non-empty notebook `versions.csv` as the authoritative package list or falls back to resolving direct R references from the JSON, and records the runtime backend, runtime reference, engine, Python version, and separate R `sessionInfo()` context.
+7. If `--document` is set, the workflow publishes the supplied review file with the results.
+8. `MULTIQC` collates the input samplesheet, file checksums, pipeline outputs, workflow parameters, software versions, runtime-environment information, and Nextflow execution profile.
+9. The `nf-prov` plugin generates BCO and Workflow Run RO-Crate provenance records.
+10. The workflow publishes the Quarto and MultiQC reports, report artifacts, checksums, the optional review document, and standard pipeline metadata under `pipeline_info/`.
 
 The notebook receives these useful parameters:
 
@@ -150,6 +151,10 @@ The notebook receives these useful parameters:
 | `params$artifact_dir`   | Directory where the notebook should write images, tables, and other artifacts to be published by the pipeline.       |
 | `params$cpus`           | CPUs allocated to the Quarto render task.                                                                            |
 
+### Recording loaded R package versions
+
+The nf-core `QUARTO_NOTEBOOK` module does not determine which packages were loaded. A custom notebook can write a headerless `versions.csv` file in its final R cell, using the example in the [README](../README.md#reporting-packages-loaded-by-an-r-notebook). The module emits that file after rendering. A non-empty file is treated as authoritative; when it is absent, the module creates an empty placeholder and `REPORTENVIRONMENT` uses Quarto inspection as a partial fallback.
+
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
@@ -160,7 +165,7 @@ nextflow run nf-core/provenancereport --input ./samplesheet.csv --outdir ./resul
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
-When a custom notebook requires a different runtime, configure `QUARTO_NOTEBOOK` with a normal Nextflow process selector. For a container runtime:
+When a custom notebook requires a different runtime, configure `QUARTO_NOTEBOOK` with a normal Nextflow process selector. `REPORTENVIRONMENT` automatically inherits that resolved runtime. For a container runtime:
 
 ```groovy title="custom-container.config"
 process {
@@ -299,7 +304,7 @@ To change the resource requests, please see the [max resources](https://nf-co.re
 
 In some cases, you may wish to change the container or Conda environment used by `QUARTO_NOTEBOOK`. This is especially relevant for `nf-core/provenancereport`, because a custom Quarto notebook may require additional R, Python, Julia, system, or Quarto extension dependencies that are not available in the default runtime.
 
-You can provide any Quarto notebook with `--notebook`, as long as the runtime configured for `QUARTO_NOTEBOOK` contains Quarto plus all packages required by that notebook. Override the process runtime in a Nextflow config file. For a container runtime:
+You can provide any Quarto notebook with `--notebook`, as long as the runtime configured for `QUARTO_NOTEBOOK` contains Quarto and all packages required by that notebook. Override the process runtime in a Nextflow config file. For a container runtime:
 
 ```groovy title="custom-container.config"
 process {
@@ -331,7 +336,7 @@ nextflow run nf-core/provenancereport \
     --outdir results
 ```
 
-`REPORTENVIRONMENT` inherits the resolved `QUARTO_NOTEBOOK` container or Conda environment when possible. With no managed runtime, the runtime-environment table reports `Not configured`.
+`REPORTENVIRONMENT` inherits the resolved `QUARTO_NOTEBOOK` container or Conda environment when possible. This makes fallback package-version lookup and the separate R `sessionInfo()` collection happen in the environment that rendered the report. With no managed runtime, the runtime-environment table reports `Not configured`. When the notebook does not provide `versions.csv`, package discovery is based on direct references in the code cells returned by `quarto inspect`; it does not detect dynamically constructed package names or packages loaded indirectly from sourced files.
 
 For more general guidance, see the [updating tool versions](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#update-tool-versions) section of the nf-core website.
 

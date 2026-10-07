@@ -16,7 +16,9 @@ nextflow_process {
                 input[0] = [
                     'QUARTO_NOTEBOOK',
                     'docker',
-                    'community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665'
+                    'community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665',
+                    file("${projectDir}/modules/local/reportenvironment/tests/assets/package_calls.inspect.json", checkIfExists: true),
+                    file("${projectDir}/modules/local/reportenvironment/tests/assets/notebook_versions.csv", checkIfExists: true)
                 ]
                 """
             }
@@ -24,22 +26,28 @@ nextflow_process {
 
         then {
             def runtime_table = path(process.out.multiqc_table.first()).text
-            def r_session_info = path(process.out.multiqc_r_session.first()).text
             def normalized_runtime_table = runtime_table
                 .replaceAll(/(?m)^Container engine\t.*$/, 'Container engine\t<ENGINE>')
                 .replaceAll(/(?m)^Python\t.*$/, 'Python\t<VERSION>')
-            def normalized_r_session_info = r_session_info.replaceAll(
-                /(?s)(data: \|\n  <pre[^\n]*>\n).*?(\n  <\/pre>)/,
+            def r_session = path(process.out.multiqc_r_session.first()).text
+            def normalized_r_session = r_session.replaceAll(
+                /(?s)(<pre[^>]*>\n).*?(\n  <\/pre>)/,
                 '$1  <R_SESSION_INFO>$2'
             )
+            def versions = path(process.out.versions.first()).text
             assertAll(
                 { assert process.success },
                 { assert runtime_table.contains('Runtime source process\tQUARTO_NOTEBOOK') },
                 { assert runtime_table.contains('Runtime backend\tdocker') },
                 { assert runtime_table.contains('Runtime reference\tcommunity.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665') },
-                { assert r_session_info.contains('R version') || r_session_info.contains('Not available') },
-                { assert normalized_r_session_info.contains('<R_SESSION_INFO>') },
-                { assert snapshot(normalized_runtime_table, normalized_r_session_info).match() },
+                { assert runtime_table.contains('Quarto engine\tknitr') },
+                { assert runtime_table.contains('Package version source\tNotebook versions.csv (authoritative)') },
+                { assert r_session.contains('This describes a separate R process in the report runtime') },
+                { assert versions.contains('"R": "from-notebook"') },
+                { assert versions.contains('"knitr": "from-notebook"') },
+                { assert versions.contains('"notebook-tool": "9.1"') },
+                { assert !versions.contains('"tidyverse":') },
+                { assert snapshot(normalized_runtime_table, normalized_r_session).match() },
             )
         }
     }
@@ -52,7 +60,9 @@ nextflow_process {
                 input[0] = [
                     'QUARTONOTEBOOK',
                     'conda',
-                    "${projectDir}/modules/local/reportenvironment/tests/assets/environment.yml"
+                    "${projectDir}/modules/local/reportenvironment/tests/assets/environment.yml",
+                    file("${projectDir}/modules/local/reportenvironment/tests/assets/package_calls.inspect.json", checkIfExists: true),
+                    file("${projectDir}/modules/local/reportenvironment/tests/assets/notebook_versions.csv", checkIfExists: true)
                 ]
                 """
             }
@@ -60,23 +70,28 @@ nextflow_process {
 
         then {
             def runtime_table = path(process.out.multiqc_table.first()).text
-            def r_session_info = path(process.out.multiqc_r_session.first()).text
             def normalized_runtime_table = runtime_table
                 .replace("${projectDir}", '<PROJECT_DIR>')
                 .replaceAll(/(?m)^Container engine\t.*$/, 'Container engine\t<ENGINE>')
                 .replaceAll(/(?m)^Python\t.*$/, 'Python\t<VERSION>')
-            def normalized_r_session_info = r_session_info.replaceAll(
-                /(?s)(data: \|\n  <pre[^\n]*>\n).*?(\n  <\/pre>)/,
+            def r_session = path(process.out.multiqc_r_session.first()).text
+            def normalized_r_session = r_session.replaceAll(
+                /(?s)(<pre[^>]*>\n).*?(\n  <\/pre>)/,
                 '$1  <R_SESSION_INFO>$2'
             )
+            def versions = path(process.out.versions.first()).text
             assertAll(
                 { assert process.success },
                 { assert runtime_table.contains('Runtime source process\tQUARTONOTEBOOK') },
                 { assert runtime_table.contains('Runtime backend\tconda') },
                 { assert runtime_table.contains("Runtime reference\t${projectDir}/modules/local/reportenvironment/tests/assets/environment.yml") },
-                { assert r_session_info.contains('R version') || r_session_info.contains('Not available') },
-                { assert normalized_r_session_info.contains('<R_SESSION_INFO>') },
-                { assert snapshot(normalized_runtime_table, normalized_r_session_info).match() },
+                { assert runtime_table.contains('Quarto engine\tknitr') },
+                { assert runtime_table.contains('Package version source\tNotebook versions.csv (authoritative)') },
+                { assert r_session.contains('This describes a separate R process in the report runtime') },
+                { assert versions.contains('"knitr": "from-notebook"') },
+                { assert versions.contains('"notebook-tool": "9.1"') },
+                { assert !versions.contains('"tidyverse":') },
+                { assert snapshot(normalized_runtime_table, normalized_r_session).match() },
             )
         }
     }
@@ -89,7 +104,9 @@ nextflow_process {
                 input[0] = [
                     'QUARTONOTEBOOK',
                     'none',
-                    'Not configured'
+                    'Not configured',
+                    file("${projectDir}/modules/local/reportenvironment/tests/assets/package_calls.inspect.json", checkIfExists: true),
+                    file("${projectDir}/modules/local/reportenvironment/tests/assets/notebook_versions.csv", checkIfExists: true)
                 ]
                 """
             }
@@ -97,22 +114,27 @@ nextflow_process {
 
         then {
             def runtime_table = path(process.out.multiqc_table.first()).text
-            def r_session_info = path(process.out.multiqc_r_session.first()).text
             def normalized_runtime_table = runtime_table
                 .replaceAll(/(?m)^Container engine\t.*$/, 'Container engine\t<ENGINE>')
                 .replaceAll(/(?m)^Python\t.*$/, 'Python\t<VERSION>')
-            def normalized_r_session_info = r_session_info.replaceAll(
-                /(?s)(data: \|\n  <pre[^\n]*>\n).*?(\n  <\/pre>)/,
+            def r_session = path(process.out.multiqc_r_session.first()).text
+            def normalized_r_session = r_session.replaceAll(
+                /(?s)(<pre[^>]*>\n).*?(\n  <\/pre>)/,
                 '$1  <R_SESSION_INFO>$2'
             )
+            def versions = path(process.out.versions.first()).text
             assertAll(
                 { assert process.success },
                 { assert runtime_table.contains('Runtime source process\tQUARTONOTEBOOK') },
                 { assert runtime_table.contains('Runtime backend\tnone') },
                 { assert runtime_table.contains('Runtime reference\tNot configured') },
-                { assert r_session_info.contains('R version') || r_session_info.contains('Not available') },
-                { assert normalized_r_session_info.contains('<R_SESSION_INFO>') },
-                { assert snapshot(normalized_runtime_table, normalized_r_session_info).match() },
+                { assert runtime_table.contains('Quarto engine\tknitr') },
+                { assert runtime_table.contains('Package version source\tNotebook versions.csv (authoritative)') },
+                { assert r_session.contains('This describes a separate R process in the report runtime') },
+                { assert versions.contains('"knitr": "from-notebook"') },
+                { assert versions.contains('"notebook-tool": "9.1"') },
+                { assert !versions.contains('"tidyverse":') },
+                { assert snapshot(normalized_runtime_table, normalized_r_session).match() },
             )
         }
     }

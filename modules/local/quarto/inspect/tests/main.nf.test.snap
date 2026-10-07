@@ -1,0 +1,18 @@
+{
+    "inspect R Quarto document": {
+        "content": [
+            [
+                [
+                    "QUARTO_INSPECT",
+                    "quarto",
+                    "1.7.31"
+                ]
+            ]
+        ],
+        "timestamp": "2026-10-06T17:01:31.481263496",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}

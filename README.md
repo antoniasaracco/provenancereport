@@ -36,13 +36,53 @@ The default workflow performs the following steps:
 
 1. Validate and normalise the input samplesheet with `nf-schema`.
 2. Resolve each `path` entry from the samplesheet as one input file.
-3. Render one Quarto notebook with all listed files using the nf-core `quarto_notebook` module.
-4. Calculate MD5 checksums for every samplesheet input, the rendered Quarto HTML, and the optional review document using the nf-core `md5sum` module.
-5. Run `REPORTENVIRONMENT` in the resolved Quarto runtime to collect the R session, Python version, and container or Conda environment details.
-6. If `--document` is provided, publish the review or sign-off document with the pipeline results.
-7. Generate a MultiQC audit report containing the input samplesheet, file checksums, published outputs, run configuration, software versions, and runtime information.
-8. Generate BCO and Workflow Run RO-Crate provenance with the `nf-prov` plugin.
-9. Publish the reports, artifacts, checksums, and standard Nextflow execution metadata.
+3. Inspect the selected notebook with Quarto to resolve its execution engine and code-cell metadata.
+4. Render one Quarto notebook with all listed files using the nf-core `quarto_notebook` module.
+5. Calculate MD5 checksums for every samplesheet input, the rendered Quarto HTML, and the optional review document using the nf-core `md5sum` module.
+6. Run `REPORTENVIRONMENT` in the resolved report runtime to use package versions recorded by the notebook, or fall back to resolving direct R package references from the inspection JSON, and collect Python, R, and runtime details.
+7. If `--document` is provided, publish the review or sign-off document with the pipeline results.
+8. Generate a MultiQC audit report containing the input samplesheet, file checksums, published outputs, run configuration, software versions, and runtime information.
+9. Generate BCO and Workflow Run RO-Crate provenance with the `nf-prov` plugin.
+10. Publish the reports, artifacts, checksums, and standard Nextflow execution metadata.
+
+### Reporting packages loaded by an R notebook
+
+For an exact record of packages loaded during notebook execution, add the following as the **final executable R cell** in a custom QMD:
+
+````markdown
+```{r}
+#| label: write-provenance-package-versions
+#| include: false
+
+session <- sessionInfo()
+packages <- c(session$otherPkgs, session$loadedOnly)
+packages <- packages[!duplicated(names(packages))]
+
+versions <- data.frame(
+  package = c("R", names(packages)),
+  version = c(
+    as.character(getRversion()),
+    vapply(packages, function(package) as.character(package$Version), character(1))
+  ),
+  stringsAsFactors = FALSE
+)
+
+write.table(
+  versions,
+  file = "versions.csv",
+  sep = ",",
+  row.names = FALSE,
+  col.names = FALSE,
+  quote = FALSE
+)
+```
+````
+
+The cell must be last so that it sees packages loaded by earlier cells. The file must contain headerless `package,version` rows and must be named exactly `versions.csv`.
+
+`versions.csv` is written by the notebook, not by Quarto itself. After rendering, the patched nf-core `QUARTO_NOTEBOOK` module emits that file to the pipeline. When it contains at least one valid row, the pipeline treats it as the complete, authoritative package list and shows it in MultiQC's **Software Versions** section. Quarto inspection is then not used for package discovery. If the notebook does not write the file, the module emits an empty placeholder and the pipeline falls back to the partial static inspection of direct R package references.
+
+MultiQC also includes **R runtime sessionInfo()** for operating-system, platform, locale, and BLAS/LAPACK context. That section is collected in a separate R process inside the same report runtime; it is not evidence of which packages the notebook loaded. The notebook-generated `versions.csv` is the authoritative source for loaded package versions.
 
 ![nf-core/provenancereport metro map](docs/images/provenancereport_metro.svg)
 

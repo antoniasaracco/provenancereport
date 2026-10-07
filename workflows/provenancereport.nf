@@ -4,6 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 include { paramsSummaryMap                } from 'plugin/nf-schema'
+include { QUARTO_INSPECT                   } from '../modules/local/quarto/inspect/main'
 include { QUARTO_NOTEBOOK                  } from '../modules/nf-core/quarto/notebook/main'
 include { REPORTENVIRONMENT               } from '../modules/local/reportenvironment/main'
 include { MD5SUM                          } from '../modules/nf-core/md5sum/main'
@@ -73,6 +74,10 @@ workflow PROVENANCEREPORT {
             []
         }
 
+    QUARTO_INSPECT (
+        ch_quarto_input.notebook,
+    )
+
     QUARTO_NOTEBOOK (
         ch_quarto_input.notebook,
         ch_quarto_input.parameters,
@@ -80,8 +85,15 @@ workflow PROVENANCEREPORT {
         ch_quarto_input.extensions,
     )
 
+    def ch_report_environment = QUARTO_INSPECT.out.inspection
+        .join(QUARTO_NOTEBOOK.out.notebook_versions)
+        .combine(QUARTO_NOTEBOOK.out.runtime_environment)
+        .map { _meta, inspection, notebook_versions, runtime_process, runtime_backend, runtime_reference ->
+            [ runtime_process, runtime_backend, runtime_reference, inspection, notebook_versions ]
+        }
+
     REPORTENVIRONMENT (
-        QUARTO_NOTEBOOK.out.runtime_environment
+        ch_report_environment
     )
 
     //
@@ -120,8 +132,10 @@ workflow PROVENANCEREPORT {
         .map { process, tool, version ->
             def trimmed_version = version?.toString()?.trim()
             def process_name = process.toString()
+            def yaml_tool = tool.toString().replace("'", "''")
+            def yaml_version = trimmed_version?.replace("'", "''")
             trimmed_version
-                ? [ process_name[process_name.lastIndexOf(':')+1..-1], "  ${tool}: ${trimmed_version}" ]
+                ? [ process_name[process_name.lastIndexOf(':')+1..-1], "  '${yaml_tool}': '${yaml_version}'" ]
                 : null
         }
         .groupTuple(by:0)
@@ -188,7 +202,7 @@ workflow PROVENANCEREPORT {
 
     ch_multiqc_files = ch_multiqc_files.mix(
         REPORTENVIRONMENT.out.multiqc_table,
-        REPORTENVIRONMENT.out.multiqc_r_session
+        REPORTENVIRONMENT.out.multiqc_r_session,
     )
 
     def ch_pipeline_outputs_rows = QUARTO_NOTEBOOK.out.html

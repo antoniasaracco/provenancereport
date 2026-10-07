@@ -19,11 +19,20 @@ nextflow_pipeline {
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             def document_index = path("$outputDir/document.csv")
             def ro_crate = path("$outputDir/ro-crate-metadata.json")
+            def versions = path("$outputDir/pipeline_info/nf_core_provenancereport_software_mqc_versions.yml")
+            def runtime_environment = path("$outputDir/multiqc/multiqc_data/multiqc_runtime_environment.txt")
+            def multiqc_report = path("$outputDir/multiqc/multiqc_report.html")
             assert workflow.success
             assertAll(
                 { assert stable_path.findAll { path -> path.startsWith("quartonotebook/") && path.endsWith(".html") }.size() == 1 },
                 { assert !document_index.exists() },
                 { assert ro_crate.exists() },
+                { assert versions.text.readLines().any { line -> line.startsWith('  R: ') } },
+                { assert versions.text.readLines().any { line -> line.startsWith('  knitr: ') } },
+                { assert runtime_environment.text.contains('Quarto engine\tknitr') },
+                { assert runtime_environment.text.contains('Package version source\tQuarto inspection fallback') },
+                { assert multiqc_report.text.contains('R runtime sessionInfo()') },
+                { assert multiqc_report.text.contains('This describes a separate R process in the report runtime') },
                 { assert [
                     'quartonotebook/provenance_report.html',
                     'quartonotebook/artifacts/provenance_report_input_files.tsv',

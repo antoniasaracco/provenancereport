@@ -117,13 +117,18 @@ output:
       - "${((workflow.containerEngine || task.executor == 'awsbatch') ? task.container : task.conda) ?: 'Not configured'}":
           type: string
           description: The resolved container image or Conda reference, or `Not configured` when no managed runtime is configured
-  versions:
-    - versions.yml:
-        type: file
-        description: Optional YAML file containing software versions
-        pattern: "versions.yml"
-        ontologies:
-          - edam: http://edamontology.org/format_3750
+  notebook_versions:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`.
+      - versions.csv:
+          type: file
+          description: Package versions written by the notebook, or an empty file when none were written
+          pattern: "versions.csv"
+          ontologies:
+            - edam: http://edamontology.org/format_3752
   versions_quarto:
     - - ${task.process}:
           type: string
@@ -146,12 +151,6 @@ output:
           description: The expression to obtain the version of the tool
 topics:
   versions:
-    - versions.yml:
-        type: file
-        description: Optional YAML file containing software versions
-        pattern: "versions.yml"
-        ontologies:
-          - edam: http://edamontology.org/format_3750
     - - ${task.process}:
           type: string
           description: The name of the process

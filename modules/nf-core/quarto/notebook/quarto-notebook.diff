@@ -3,10 +3,17 @@ Changes in component 'nf-core/quarto/notebook'
 Changes in 'quarto/notebook/meta.yml':
 --- modules/nf-core/quarto/notebook/meta.yml
 +++ modules/nf-core/quarto/notebook/meta.yml
-@@ -107,6 +107,16 @@
+@@ -107,13 +107,28 @@
            description: Quarto extensions used during report rendering.
            pattern: "*"
            ontologies: []
+-  versions:
+-    - versions.yml:
+-        type: file
+-        description: Optional YAML file containing software versions
+-        pattern: "versions.yml"
+-        ontologies:
+-          - edam: http://edamontology.org/format_3750
 +  runtime_environment:
 +    - - ${task.process}:
 +          type: string
@@ -17,83 +24,156 @@ Changes in 'quarto/notebook/meta.yml':
 +      - "${((workflow.containerEngine || task.executor == 'awsbatch') ? task.container : task.conda) ?: 'Not configured'}":
 +          type: string
 +          description: The resolved container image or Conda reference, or `Not configured` when no managed runtime is configured
++  notebook_versions:
++    - - meta:
++          type: map
++          description: |
++            Groovy Map containing sample information
++            e.g. `[ id:'sample1', single_end:false ]`.
++      - versions.csv:
++          type: file
++          description: Package versions written by the notebook, or an empty file when none were written
++          pattern: "versions.csv"
++          ontologies:
++            - edam: http://edamontology.org/format_3752
+   versions_quarto:
+     - - ${task.process}:
+           type: string
+@@ -136,12 +151,6 @@
+           description: The expression to obtain the version of the tool
+ topics:
    versions:
-     - versions.yml:
-         type: file
+-    - versions.yml:
+-        type: file
+-        description: Optional YAML file containing software versions
+-        pattern: "versions.yml"
+-        ontologies:
+-          - edam: http://edamontology.org/format_3750
+     - - ${task.process}:
+           type: string
+           description: The name of the process
 
 Changes in 'quarto/notebook/main.nf':
 --- modules/nf-core/quarto/notebook/main.nf
 +++ modules/nf-core/quarto/notebook/main.nf
-@@ -28,6 +28,7 @@
+@@ -4,10 +4,9 @@
+ // Papermill and whatever language you are running your analyses on; you can see
+ // an example in this module's environment file.
+ //
+-// NB 2: You'll need to export the versions of the packages you are using inside
+-// your notebook to a `versions.csv` file (formatted as `package,version`),
+-// which will be added to the `versions` topic; module versions are handled
+-// separately by `eval()` statements.
++// NB 2: If the notebook writes a `versions.csv` file (formatted as
++// `package,version`), it is passed to the workflow for version collation.
++// Module versions are handled separately by `eval()`.
+ process QUARTO_NOTEBOOK {
+     tag "${meta.id}"
+     label 'process_low'
+@@ -28,7 +27,8 @@
      tuple val(meta), path("params.yml")                                                        , emit: params_yaml
      tuple val(meta), path("${notebook_parameters.artifact_dir}/*")                             , emit: artifacts  , optional: true
      tuple val(meta), path("_extensions")                                                       , emit: extensions , optional: true
+-    path "versions.yml"                                                                        , emit: versions          , topic: versions
 +    tuple val("${task.process}"), val("${workflow.containerEngine ?: (task.executor == 'awsbatch' ? 'awsbatch' : (task.conda ? 'conda' : 'none'))}"), val("${((workflow.containerEngine || task.executor == 'awsbatch') ? task.container : task.conda) ?: 'Not configured'}"), emit: runtime_environment
-     path "versions.yml"                                                                        , emit: versions          , topic: versions
++    tuple val(meta), path("versions.csv")                                                       , emit: notebook_versions
      tuple val("${task.process}"), val('quarto'), eval('quarto -v')                             , emit: versions_quarto   , topic: versions
      tuple val("${task.process}"), val('papermill'), eval('papermill --version | cut -f1 -d" "'), emit: versions_papermill, topic: versions
-@@ -85,12 +86,6 @@
+ 
+@@ -64,10 +64,6 @@
+     export XDG_CACHE_HOME="./.xdg_cache_home"
+     export XDG_DATA_HOME="./.xdg_data_home"
+ 
+-    # Without a _quarto.yml here, Quarto searches parent directories for a project and can
+-    # pick one outside the task (https://github.com/quarto-dev/quarto-cli/issues/14980)
+-    [ -e _quarto.yml ] || printf 'project:\\n  type: default\\n' > _quarto.yml
+-
+     # Fix Quarto for Apptainer (see https://community.seqera.io/t/confusion-over-why-a-tool-works-in-docker-but-fails-in-singularity-when-the-installation-doesnt-differ-i-e-using-wave-micromamba/1244)
+     ENV_QUARTO=/opt/conda/etc/conda/activate.d/quarto.sh
+     set +u
+@@ -89,17 +85,10 @@
          --execute-params params.yml \\
          --output ${prefix}.html
  
 -    # Check that notebook package versions is exported
--    if [ ! -f versions.csv ]; then
++    # Always emit the optional notebook-provided version list for downstream collation.
+     if [ ! -f versions.csv ]; then
 -        echo "ERROR: versions.csv not found; the notebook must write out [tool,version] pairs used within it." >&2
 -        exit 1
--    fi
++        touch versions.csv
+     fi
 -
-     # Write notebook package versions to YAML
-     cat <<- END_VERSIONS > versions.yml
-     "${task.process}":
+-    # Write notebook package versions to YAML
+-    cat <<- END_VERSIONS > versions.yml
+-    "${task.process}":
+-    \$(awk -F',' '{printf "    %s: %s\\n", \$1, \$2}' versions.csv)
+-    END_VERSIONS
+     """
+ 
+     stub:
+@@ -122,6 +111,6 @@
+ 
+     touch ${prefix}.html
+     touch params.yml
+-    touch versions.yml
++    touch versions.csv
+     """
+ }
 
 Changes in 'quarto/notebook/tests/main.nf.test':
 --- modules/nf-core/quarto/notebook/tests/main.nf.test
 +++ modules/nf-core/quarto/notebook/tests/main.nf.test
-@@ -32,6 +32,7 @@
+@@ -32,6 +32,8 @@
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
 +                    process.out.runtime_environment,
++                    process.out.notebook_versions,
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
-@@ -62,6 +63,7 @@
+@@ -62,6 +64,8 @@
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
 +                    process.out.runtime_environment,
++                    process.out.notebook_versions,
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
-@@ -92,6 +94,7 @@
+@@ -92,6 +96,8 @@
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
 +                    process.out.runtime_environment,
++                    process.out.notebook_versions,
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
-@@ -123,6 +126,7 @@
+@@ -123,6 +129,8 @@
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
 +                    process.out.runtime_environment,
++                    process.out.notebook_versions,
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
-@@ -154,6 +158,7 @@
+@@ -154,6 +162,8 @@
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
 +                    process.out.runtime_environment,
++                    process.out.notebook_versions,
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
-@@ -192,6 +197,7 @@
+@@ -192,6 +202,8 @@
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
 +                    process.out.runtime_environment,
++                    process.out.notebook_versions,
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World') } },
@@ -101,26 +181,28 @@ Changes in 'quarto/notebook/tests/main.nf.test':
 Changes in 'quarto/notebook/tests/main.nf.test.snap':
 --- modules/nf-core/quarto/notebook/tests/main.nf.test.snap
 +++ modules/nf-core/quarto/notebook/tests/main.nf.test.snap
-@@ -33,16 +33,23 @@
+@@ -33,16 +33,28 @@
                      
                  ],
                  "5": [
+-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
 +                    [
 +                        "QUARTO_NOTEBOOK",
-+                        "podman",
-+                        "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                        "singularity",
++                        "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
 +                    ]
-+                ],
-+                "6": [
-                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                  ],
--                "6": [
--                    [
+                 "6": [
+                     [
 -                        "QUARTO_NOTEBOOK",
 -                        "quarto",
 -                        "1.7.31"
--                    ]
--                ],
++                        {
++                            "id": "test"
++                        },
++                        "versions.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                     ]
+                 ],
                  "7": [
 +                    [
 +                        "QUARTO_NOTEBOOK",
@@ -132,21 +214,37 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      [
                          "QUARTO_NOTEBOOK",
                          "papermill",
-@@ -79,6 +86,13 @@
+@@ -71,6 +83,14 @@
+                         "quarto_r.qmd:md5,a6a7392a32a4a2f5637fd8245b936031"
+                     ]
+                 ],
++                "notebook_versions": [
++                    [
++                        {
++                            "id": "test"
++                        },
++                        "versions.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
++                    ]
++                ],
+                 "params_yaml": [
+                     [
+                         {
+@@ -79,8 +99,12 @@
                          "params.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                      ]
                  ],
+-                "versions": [
+-                    "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
 +                "runtime_environment": [
 +                    [
 +                        "QUARTO_NOTEBOOK",
-+                        "podman",
-+                        "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                        "singularity",
++                        "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
 +                    ]
-+                ],
-                 "versions": [
-                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                  ],
-@@ -98,10 +112,10 @@
+                 "versions_papermill": [
+                     [
+@@ -98,18 +122,15 @@
                  ]
              }
          ],
@@ -161,13 +259,29 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
          }
      },
      "test notebook - [qmd:r]": {
-@@ -135,6 +149,13 @@
+         "content": [
+             {
+-                "versions": [
+-                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
+-                ],
+                 "versions_papermill": [
+                     [
+                         "QUARTO_NOTEBOOK",
+@@ -135,6 +156,21 @@
              ],
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "singularity",
++                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "versions.csv:md5,d72f61e5b874e3e8d92c8a33f5a0d587"
 +                ]
 +            ],
 +            [
@@ -175,7 +289,7 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -142,10 +163,10 @@
+@@ -142,18 +178,15 @@
                  ]
              ]
          ],
@@ -190,13 +304,29 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
          }
      },
      "test notebook - parametrized - [qmd:python]": {
-@@ -179,6 +200,13 @@
+         "content": [
+             {
+-                "versions": [
+-                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+-                ],
+                 "versions_papermill": [
+                     [
+                         "QUARTO_NOTEBOOK",
+@@ -179,6 +212,21 @@
              ],
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "singularity",
++                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "versions.csv:md5,e5d7ddb4d1c9fbdf48dec0c0ace31725"
 +                ]
 +            ],
 +            [
@@ -204,7 +334,7 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -186,10 +214,10 @@
+@@ -186,18 +234,15 @@
                  ]
              ]
          ],
@@ -219,13 +349,29 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
          }
      },
      "test notebook - parametrized - [rmd]": {
-@@ -223,6 +251,13 @@
+         "content": [
+             {
+-                "versions": [
+-                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
+-                ],
+                 "versions_papermill": [
+                     [
+                         "QUARTO_NOTEBOOK",
+@@ -223,6 +268,21 @@
              ],
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "singularity",
++                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "versions.csv:md5,d72f61e5b874e3e8d92c8a33f5a0d587"
 +                ]
 +            ],
 +            [
@@ -233,7 +379,7 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -230,10 +265,10 @@
+@@ -230,18 +290,15 @@
                  ]
              ]
          ],
@@ -248,13 +394,29 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
          }
      },
      "test notebook - parametrized - [ipynb]": {
-@@ -267,6 +302,13 @@
+         "content": [
+             {
+-                "versions": [
+-                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+-                ],
+                 "versions_papermill": [
+                     [
+                         "QUARTO_NOTEBOOK",
+@@ -267,6 +324,21 @@
              ],
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "singularity",
++                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "versions.csv:md5,e5d7ddb4d1c9fbdf48dec0c0ace31725"
 +                ]
 +            ],
 +            [
@@ -262,7 +424,7 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -274,10 +316,10 @@
+@@ -274,18 +346,15 @@
                  ]
              ]
          ],
@@ -277,13 +439,29 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
          }
      },
      "test notebook - [qmd:python]": {
-@@ -311,6 +353,13 @@
+         "content": [
+             {
+-                "versions": [
+-                    "versions.yml:md5,68fd39542815eb5537cdb4b234e2d30d"
+-                ],
+                 "versions_papermill": [
+                     [
+                         "QUARTO_NOTEBOOK",
+@@ -311,6 +380,21 @@
              ],
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "singularity",
++                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "versions.csv:md5,e5d7ddb4d1c9fbdf48dec0c0ace31725"
 +                ]
 +            ],
 +            [
@@ -291,7 +469,7 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -318,10 +367,10 @@
+@@ -318,18 +402,15 @@
                  ]
              ]
          ],
@@ -306,13 +484,29 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
          }
      },
      "test notebook - parametrized - [qmd:r]": {
-@@ -355,6 +404,13 @@
+         "content": [
+             {
+-                "versions": [
+-                    "versions.yml:md5,ffbc211e9dcc1252c411bdd2f072b92e"
+-                ],
+                 "versions_papermill": [
+                     [
+                         "QUARTO_NOTEBOOK",
+@@ -355,6 +436,21 @@
              ],
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "singularity",
++                    "https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data"
++                ]
++            ],
++            [
++                [
++                    {
++                        "id": "test"
++                    },
++                    "versions.csv:md5,d72f61e5b874e3e8d92c8a33f5a0d587"
 +                ]
 +            ],
 +            [
@@ -320,7 +514,7 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -362,10 +418,10 @@
+@@ -362,10 +458,10 @@
                  ]
              ]
          ],
@@ -334,6 +528,7 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
 +            "nextflow": "25.10.4"
          }
      }
- }
+-}+}
+
 'modules/nf-core/quarto/notebook/tests/nextflow.config' is unchanged
 ************************************************************
