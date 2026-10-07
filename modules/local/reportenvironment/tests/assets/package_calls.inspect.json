@@ -1,15 +1,15 @@
 {
-    "quarto": { "version": "1.7.31" },
-    "engines": ["knitr"],
-    "fileInformation": {
-        "package_calls.qmd": {
-            "includeMap": [],
-            "codeCells": [
-                {
-                    "language": "r",
-                    "source": "require(conflicted)\nlibrary(tidyverse)\nlibrary(tidylog)\nlibrary(plotly)\nlibrary(readxl)\nknitr::kable(data.frame(value = 1))\n"
-                }
-            ]
+  "quarto": {"version": "1.7.31"},
+  "engines": ["knitr"],
+  "fileInformation": {
+    "package_calls.qmd": {
+      "includeMap": [],
+      "codeCells": [
+        {
+          "language": "r",
+          "source": "require(conflicted)\nlibrary(tidyverse)\nlibrary(tidylog)\nlibrary(plotly)\nlibrary(readxl)\nknitr::kable(data.frame(value = 1))\n"
         }
+      ]
     }
+  }
 }
