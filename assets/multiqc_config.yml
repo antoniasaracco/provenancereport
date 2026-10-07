@@ -43,7 +43,7 @@ custom_data:
   file_checksums:
     id: "file_checksums"
     section_name: "File Checksums"
-    description: "MD5 checksums for every file listed in the input samplesheet and the rendered Quarto report."
+    description: "MD5 checksums for every file listed in the input samplesheet, the rendered Quarto report, and the optional review document."
     plot_type: "table"
     file_format: "tsv"
     pconfig:

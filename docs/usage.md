@@ -106,13 +106,15 @@ expression_xlsx,input/expression_sample.xlsx
 expression_csv,input/expression_sample.csv
 ```
 
-Currently this is not valid for the current staging layout because both rows would be staged as `expression.xlsx`:
+This is rejected because both rows would be staged as `expression.xlsx`:
 
 ```csv title="samplesheet.csv"
 id,path
 cohort_a,cohort_a/input/expression.xlsx
 cohort_b,cohort_b/input/expression.xlsx
 ```
+
+Input paths must not contain commas because the staged basenames are passed to the notebook as the comma-separated `params$input_files` value.
 
 ## Review document input
 
@@ -131,9 +133,9 @@ The main workflow performs nine steps:
 1. `PIPELINE_INITIALISATION` validates `--input` with the `nf-schema` plugin and resolves each `path` entry as a single file.
 2. The workflow selects the notebook using `--notebook`, or the bundled `assets/provenance_report.qmd` if `--notebook` is unset.
 3. `QUARTO_NOTEBOOK` renders one Quarto HTML report using all samplesheet rows. The process receives `[meta, notebook]`, a parameter map, and the actual input files as a plain path channel. Its official eval outputs provide versions for software present in its runtime environment; empty version values are discarded.
-4. `MD5SUM` calculates MD5 checksums for every samplesheet input and for the rendered Quarto HTML report.
+4. `MD5SUM` calculates MD5 checksums for every samplesheet input, the rendered Quarto HTML report, and the review document when `--document` is provided.
 5. `REPORTENVIRONMENT` receives the resolved `QUARTO_NOTEBOOK` runtime metadata and inherits the matching container image or Conda environment when one is configured. It captures the runtime backend, runtime reference, `R sessionInfo()`, and Python version. Missing R or Python installations are reported as unavailable without failing the run.
-6. If `--document` is set, the workflow materializes the supplied review file with `collectFile` so it can be published with the results without launching an additional process.
+6. If `--document` is set, the workflow publishes the supplied review file with the results.
 7. `MULTIQC` collates the input samplesheet, file checksums, pipeline outputs, workflow parameters, software versions, runtime-environment information, and Nextflow execution profile.
 8. The `nf-prov` plugin generates BCO and Workflow Run RO-Crate provenance records.
 9. The workflow publishes the Quarto and MultiQC reports, report artifacts, checksums, the optional review document, and standard pipeline metadata under `pipeline_info/`.
@@ -209,7 +211,7 @@ notebook: "./custom_report.qmd"
 document: "./review-signoff.pdf"
 ```
 
-The `notebook` and `document` entries are optional. If `notebook` is omitted, the bundled `assets/provenance_report.qmd` notebook is used. If `document` is omitted, no review document is staged and the corresponding MultiQC section is not added.
+The `notebook` and `document` entries are optional. If `notebook` is omitted, the bundled `assets/provenance_report.qmd` notebook is used. If `document` is omitted, no review document is staged and the document row is omitted from the MultiQC **Pipeline Outputs** table.
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 

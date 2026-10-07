@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/provenancereport/master/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/nf-core/provenancereport/main/nextflow_schema.json",
     "title": "nf-core/provenancereport pipeline parameters",
-    "description": "A simple pipeline to produce provenance / auditable reports when executing a report. ",
+    "description": "Generate reproducible Quarto reports together with an audit trail of inputs, checksums, software versions, runtime environments, and provenance metadata.",
     "type": "object",
     "$defs": {
         "input_output_options": {

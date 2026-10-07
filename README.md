@@ -11,7 +11,7 @@
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
 [![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.10.4-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
-[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.0.2-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.0.2)
+[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.1.0-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.1.0)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
@@ -37,7 +37,7 @@ The default workflow performs the following steps:
 1. Validate and normalise the input samplesheet with `nf-schema`.
 2. Resolve each `path` entry from the samplesheet as one input file.
 3. Render one Quarto notebook with all listed files using the nf-core `quarto_notebook` module.
-4. Calculate MD5 checksums for every samplesheet input and the rendered Quarto HTML using the nf-core `md5sum` module.
+4. Calculate MD5 checksums for every samplesheet input, the rendered Quarto HTML, and the optional review document using the nf-core `md5sum` module.
 5. Run `REPORTENVIRONMENT` in the resolved Quarto runtime to collect the R session, Python version, and container or Conda environment details.
 6. If `--document` is provided, publish the review or sign-off document with the pipeline results.
 7. Generate a MultiQC audit report containing the input samplesheet, file checksums, published outputs, run configuration, software versions, and runtime information.
@@ -61,7 +61,7 @@ counts,counts.tsv
 metadata,metadata.tsv
 ```
 
-Each row represents exactly one input file. The `id` value is included in `params$input_ids`, and `path` must point to a single file.
+Each row represents exactly one input file. The `id` value is included in `params$meta$input_ids`, and `path` must point to a single file.
 
 Now, you can run the pipeline using:
 
@@ -86,9 +86,9 @@ For more details and further functionality, please refer to the [usage documenta
 A successful run produces:
 
 - `quartonotebook/*.html`: the rendered Quarto report, plus the source notebook and any report artifacts.
-- `md5sum/provenancereport.md5`: checksums for every samplesheet input and the rendered report.
+- `md5sum/provenancereport.md5`: checksums for every samplesheet input, the rendered report, and the optional review document.
 - `multiqc/multiqc_report.html`: an audit report covering inputs, checksums, outputs, parameters, software versions, and the report runtime.
-- `pipeline_info/manifest_<timestamp>.bco.json` and `pipeline_info/ro-crate-metadata_<timestamp>.json`: BCO and Workflow Run RO-Crate provenance.
+- `pipeline_info/manifest_<timestamp>.bco.json` and `ro-crate-metadata.json`: BCO and Workflow Run RO-Crate provenance.
 - `pipeline_info/`: Nextflow execution reports, trace, DAG, parameters, and collected software versions.
 - The original review or sign-off file at the results root when `--document` is provided.
 

@@ -1,10 +1,11 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/provenancereport/master/assets/schema_input.json",
+    "$id": "https://raw.githubusercontent.com/nf-core/provenancereport/main/assets/schema_input.json",
     "title": "nf-core/provenancereport pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
     "minItems": 1,
+    "uniqueEntries": ["id"],
     "items": {
         "type": "object",
         "properties": {
@@ -18,7 +19,7 @@
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+$",
+                "pattern": "^[^\\s,]+$",
                 "errorMessage": "Path must point to exactly one file and cannot contain spaces or comma-separated values"
             }
         },
