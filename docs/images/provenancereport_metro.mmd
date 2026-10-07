@@ -22,8 +22,7 @@ graph LR
     end
 
     subgraph provenance [Provenance report]
-        quartoinspect[QUARTO_INSPECT]
-        quartonotebook[QUARTO_NOTEBOOK]
+        quartonotebook[QUARTONOTEBOOK]
         md5sum[MD5SUM]
         reportenvironment[REPORTENVIRONMENT]
         multiqc[MULTIQC]
@@ -40,11 +39,8 @@ graph LR
     end
 
     samplesheet -->|report| quartonotebook
-    samplesheet -->|report| md5sum
-    custom_report -->|report| quartoinspect
     custom_report -->|report| quartonotebook
     custom_config -->|report| quartonotebook
-    quartoinspect -->|report| reportenvironment
     quartonotebook -->|report| quarto_report
     quartonotebook -->|report| md5sum
     quartonotebook -->|report| reportenvironment
@@ -57,5 +53,3 @@ graph LR
     nfprov -->|report| rocrate
 
     review_document -->|review| review_output
-    review_document -->|review| md5sum
-    md5sum -->|review| checksums

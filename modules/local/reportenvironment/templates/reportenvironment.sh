@@ -9,10 +9,11 @@ extract_inspection_metadata() {
         python_command='python'
     elif command -v python3 >/dev/null 2>&1; then
         python_command='python3'
+    else
+        return
     fi
 
-    if [ -n "\${python_command}" ]; then
-        "\${python_command}" - "${inspection}" <<'PYTHON'
+    "\${python_command}" - "${inspection}" <<'PYTHON'
 import json
 import pathlib
 import sys
@@ -38,61 +39,6 @@ for document in (inspection.get("fileInformation") or {}).values():
             encoding="utf-8",
         )
 PYTHON
-        return
-    fi
-
-    if ! command -v Rscript >/dev/null 2>&1 || ! Rscript --vanilla -e 'quit(save = "no", status = !requireNamespace("jsonlite", quietly = TRUE))'; then
-        return
-    fi
-
-    Rscript --vanilla - "${inspection}" <<'RSCRIPT'
-args <- commandArgs(trailingOnly = TRUE)
-inspection <- jsonlite::fromJSON(args[[1L]], simplifyVector = FALSE)
-
-engines <- unlist(inspection[["engines"]], use.names = FALSE)
-if (length(engines) != 1L) {
-    stop(
-        sprintf(
-            "Expected exactly one Quarto execution engine, but found: %s",
-            if (length(engines)) paste(engines, collapse = ", ") else "none"
-        ),
-        call. = FALSE
-    )
-}
-writeLines(as.character(engines[[1L]]), "report_engine.txt", useBytes = TRUE)
-
-cell_number <- 0L
-file_information <- inspection[["fileInformation"]]
-if (is.null(file_information)) {
-    file_information <- list()
-}
-
-for (document in file_information) {
-    code_cells <- document[["codeCells"]]
-    if (is.null(code_cells)) {
-        next
-    }
-
-    for (cell in code_cells) {
-        language <- cell[["language"]]
-        if (is.null(language) || tolower(as.character(language)) != "r") {
-            next
-        }
-
-        cell_number <- cell_number + 1L
-        source <- cell[["source"]]
-        if (is.null(source)) {
-            source <- ""
-        }
-        writeChar(
-            as.character(source),
-            sprintf("r_cell_%04d.R", cell_number),
-            eos = NULL,
-            useBytes = TRUE
-        )
-    }
-}
-RSCRIPT
 }
 
 collect_r_package_versions() {

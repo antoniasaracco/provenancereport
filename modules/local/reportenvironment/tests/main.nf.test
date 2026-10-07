@@ -8,7 +8,7 @@ nextflow_process {
     tag "modules_local"
     tag "reportenvironment"
 
-    test("collect report runtime environment - R-only container") {
+    test("collect report runtime environment - container") {
 
         when {
             process {
@@ -16,9 +16,9 @@ nextflow_process {
                 input[0] = [
                     'QUARTO_NOTEBOOK',
                     'docker',
-                    'community.wave.seqera.io/library/r-base_quarto_r-rmarkdown_r-conflicted_pruned:ad3e9e15399e1f89',
+                    'community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665',
                     file("${projectDir}/modules/local/reportenvironment/tests/assets/package_calls.inspect.json", checkIfExists: true),
-                    file("${projectDir}/modules/local/reportenvironment/tests/assets/notebook_versions_empty.csv", checkIfExists: true)
+                    file("${projectDir}/modules/local/reportenvironment/tests/assets/notebook_versions.csv", checkIfExists: true)
                 ]
                 """
             }
@@ -39,15 +39,14 @@ nextflow_process {
                 { assert process.success },
                 { assert runtime_table.contains('Runtime source process\tQUARTO_NOTEBOOK') },
                 { assert runtime_table.contains('Runtime backend\tdocker') },
-                { assert runtime_table.contains('Runtime reference\tcommunity.wave.seqera.io/library/r-base_quarto_r-rmarkdown_r-conflicted_pruned:ad3e9e15399e1f89') },
+                { assert runtime_table.contains('Runtime reference\tcommunity.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665') },
                 { assert runtime_table.contains('Quarto engine\tknitr') },
-                { assert runtime_table.contains('Python\tNot available') },
-                { assert runtime_table.contains('Package version source\tQuarto inspection fallback') },
+                { assert runtime_table.contains('Package version source\tNotebook versions.csv (authoritative)') },
                 { assert r_session.contains('This describes a separate R process in the report runtime') },
-                { assert versions.contains('"R": "') },
-                { assert versions.contains('"knitr":') },
-                { assert versions.contains('"tidyverse":') },
-                { assert versions.contains('"conflicted":') },
+                { assert versions.contains('"R": "from-notebook"') },
+                { assert versions.contains('"knitr": "from-notebook"') },
+                { assert versions.contains('"notebook-tool": "9.1"') },
+                { assert !versions.contains('"tidyverse":') },
                 { assert snapshot(normalized_runtime_table, normalized_r_session).match() },
             )
         }

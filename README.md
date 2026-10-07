@@ -39,17 +39,13 @@ The default workflow performs the following steps:
 3. Inspect the selected notebook with Quarto to resolve its execution engine and code-cell metadata.
 4. Render one Quarto notebook with all listed files using the nf-core `quarto_notebook` module.
 5. Calculate MD5 checksums for every samplesheet input, the rendered Quarto HTML, and the optional review document using the nf-core `md5sum` module.
-6. Run `REPORTENVIRONMENT` in the resolved report runtime to use package versions recorded by the notebook, or fall back to resolving direct R package references from the inspection JSON, and record Python and R availability plus runtime details.
+6. Run `REPORTENVIRONMENT` in the resolved report runtime to use package versions recorded by the notebook, or fall back to resolving direct R package references from the inspection JSON, and collect Python, R, and runtime details.
 7. If `--document` is provided, publish the review or sign-off document with the pipeline results.
 8. Generate a MultiQC audit report containing the input samplesheet, file checksums, published outputs, run configuration, software versions, and runtime information.
 9. Generate BCO and Workflow Run RO-Crate provenance with the `nf-prov` plugin.
 10. Publish the reports, artifacts, checksums, and standard Nextflow execution metadata.
 
-### Reporting notebook package versions
-
-A Quarto QMD can execute R, Python, or another language supported by its execution engine. `quarto inspect` reports the selected engine and the language and source of each code cell; it does not report installed packages or their versions. The language-neutral `versions.csv` file is therefore the authoritative way for a notebook to report package versions collected during execution.
-
-#### R
+### Reporting packages loaded by an R notebook
 
 For an exact record of packages loaded during notebook execution, add the following as the **final executable R cell** in a custom QMD:
 
@@ -82,44 +78,11 @@ write.table(
 ```
 ````
 
-#### Python
-
-For a Python QMD, add this as the **final executable Python cell**. It records installed distributions associated with modules loaded in the current Jupyter kernel:
-
-````markdown
-```{python}
-#| label: write-provenance-package-versions
-#| include: false
-
-import csv
-import importlib.metadata as metadata
-import platform
-import sys
-
-package_map = metadata.packages_distributions()
-distributions = sorted({
-    distribution
-    for module in sys.modules
-    for distribution in package_map.get(module.split(".", 1)[0], [])
-})
-
-versions = [("Python", platform.python_version())]
-for distribution in distributions:
-    try:
-        versions.append((distribution, metadata.version(distribution)))
-    except metadata.PackageNotFoundError:
-        pass
-
-with open("versions.csv", "w", newline="", encoding="utf-8") as handle:
-    csv.writer(handle, lineterminator="\n").writerows(versions)
-```
-````
-
-The version-reporting cell must be last so that it sees modules or packages loaded by earlier cells. The file must contain headerless `package,version` rows and must be named exactly `versions.csv`.
+The cell must be last so that it sees packages loaded by earlier cells. The file must contain headerless `package,version` rows and must be named exactly `versions.csv`.
 
 `versions.csv` is written by the notebook, not by Quarto itself. After rendering, the patched nf-core `QUARTO_NOTEBOOK` module emits that file to the pipeline. When it contains at least one valid row, the pipeline treats it as the complete, authoritative package list and shows it in MultiQC's **Software Versions** section. Quarto inspection is then not used for package discovery. If the notebook does not write the file, the module emits an empty placeholder and the pipeline falls back to the partial static inspection of direct R package references.
 
-The automatic inspection fallback currently recognises only R package calls. Python and Julia notebooks should write `versions.csv` if their package versions must appear in MultiQC. MultiQC also includes **R runtime sessionInfo()** when R is available for operating-system, platform, locale, and BLAS/LAPACK context. That section is collected in a separate R process inside the same report runtime; it is not evidence of which packages the notebook loaded.
+MultiQC also includes **R runtime sessionInfo()** for operating-system, platform, locale, and BLAS/LAPACK context. That section is collected in a separate R process inside the same report runtime; it is not evidence of which packages the notebook loaded. The notebook-generated `versions.csv` is the authoritative source for loaded package versions.
 
 ![nf-core/provenancereport metro map](docs/images/provenancereport_metro.svg)
 
