@@ -135,7 +135,7 @@ The main workflow performs ten steps:
 3. `QUARTO_INSPECT` only runs `quarto inspect` and passes its metadata JSON to `REPORTENVIRONMENT`.
 4. `QUARTO_NOTEBOOK` renders one Quarto HTML report using all samplesheet rows and passes through an optional `versions.csv` written by the notebook. It does not modify the source notebook.
 5. `MD5SUM` calculates MD5 checksums for every samplesheet input, the rendered Quarto HTML report, and the review document when `--document` is provided.
-6. `REPORTENVIRONMENT` receives the inspection JSON and resolved `QUARTO_NOTEBOOK` runtime metadata. It inherits the matching container image or Conda environment, uses a non-empty notebook `versions.csv` as the authoritative package list or falls back to resolving direct R references from the JSON, and records the runtime backend, runtime reference, engine, Python version, and separate R `sessionInfo()` context.
+6. `REPORTENVIRONMENT` receives the inspection JSON and resolved `QUARTO_NOTEBOOK` runtime metadata. It inherits the matching container image or Conda environment, uses a non-empty notebook `versions.csv` as the authoritative package list or falls back to resolving direct R references from the JSON, and records the runtime backend, runtime reference, engine, Python availability and version, and separate R `sessionInfo()` context.
 7. If `--document` is set, the workflow publishes the supplied review file with the results.
 8. `MULTIQC` collates the input samplesheet, file checksums, pipeline outputs, workflow parameters, software versions, runtime-environment information, and Nextflow execution profile.
 9. The `nf-prov` plugin generates BCO and Workflow Run RO-Crate provenance records.
@@ -151,9 +151,28 @@ The notebook receives these useful parameters:
 | `params$artifact_dir`   | Directory where the notebook should write images, tables, and other artifacts to be published by the pipeline.       |
 | `params$cpus`           | CPUs allocated to the Quarto render task.                                                                            |
 
-### Recording loaded R package versions
+### Notebook languages and Quarto engines
 
-The nf-core `QUARTO_NOTEBOOK` module does not determine which packages were loaded. A custom notebook can write a headerless `versions.csv` file in its final R cell, using the example in the [README](../README.md#reporting-packages-loaded-by-an-r-notebook). The module emits that file after rendering. A non-empty file is treated as authoritative; when it is absent, the module creates an empty placeholder and `REPORTENVIRONMENT` uses Quarto inspection as a partial fallback.
+The notebook language and its Quarto execution engine are related but are not the same thing:
+
+| Engine     | Typical use                                                                                                    |
+| ---------- | -------------------------------------------------------------------------------------------------------------- |
+| `knitr`    | R QMDs. It can also execute Python through the R `reticulate` package, including mixed R and Python documents. |
+| `jupyter`  | A Jupyter kernel executes the document. Python is common, but R, Julia, and other kernels are also possible.   |
+| `julia`    | Quarto's native Julia engine.                                                                                  |
+| `markdown` | No executable computation engine.                                                                              |
+
+For a QMD, Quarto normally selects `knitr` when it finds an R cell and `jupyter` for other executable cells; the document can override that choice. See Quarto's [engine binding documentation](https://quarto.org/docs/computations/execution-options.html#engine-binding).
+
+`QUARTO_INSPECT` does not execute the notebook and does not inspect the installed package environment. It records the selected engine plus each cell's language, source, and metadata. `QUARTO_NOTEBOOK` later executes those cells in the configured report runtime.
+
+Inside `REPORTENVIRONMENT`, Python is used to read the inspection JSON when it is available; an R and `jsonlite` fallback handles R-only runtimes. These parsers do not execute notebook cells. The Python row in MultiQC reports whether a Python interpreter is available in the report runtime, not whether the notebook used Python.
+
+### Recording notebook package versions
+
+The nf-core `QUARTO_NOTEBOOK` module does not determine which packages were loaded. A custom R or Python notebook can write a headerless `versions.csv` file in its final executable cell, using the examples in the [README](../README.md#reporting-notebook-package-versions). The module emits that file after rendering. A non-empty file is treated as authoritative and works for any notebook language.
+
+When `versions.csv` is absent, the module creates an empty placeholder and `REPORTENVIRONMENT` uses Quarto inspection as a partial fallback. That fallback currently recognises direct R references such as `library(pkg)`, `require(pkg)`, and `pkg::function()` and resolves them against the report runtime. It does not infer Python imports or Julia packages, so notebooks using those languages should write `versions.csv`.
 
 ## Running the pipeline
 
@@ -336,7 +355,7 @@ nextflow run nf-core/provenancereport \
     --outdir results
 ```
 
-`REPORTENVIRONMENT` inherits the resolved `QUARTO_NOTEBOOK` container or Conda environment when possible. This makes fallback package-version lookup and the separate R `sessionInfo()` collection happen in the environment that rendered the report. With no managed runtime, the runtime-environment table reports `Not configured`. When the notebook does not provide `versions.csv`, package discovery is based on direct references in the code cells returned by `quarto inspect`; it does not detect dynamically constructed package names or packages loaded indirectly from sourced files.
+`REPORTENVIRONMENT` inherits the resolved `QUARTO_NOTEBOOK` container or Conda environment when possible. This makes fallback package-version lookup and the separate R `sessionInfo()` collection happen in the environment that rendered the report. With no managed runtime, the runtime-environment table reports `Not configured`. When the notebook does not provide `versions.csv`, package discovery is limited to direct R references in the code cells returned by `quarto inspect`; it does not detect Python or Julia packages, dynamically constructed R package names, or packages loaded indirectly from sourced files.
 
 For more general guidance, see the [updating tool versions](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#update-tool-versions) section of the nf-core website.
 

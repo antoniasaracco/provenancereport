@@ -273,8 +273,9 @@ workflow PROVENANCEREPORT {
     versions       = ch_collated_versions                                // channel: [ path(versions.yml) ]
     multiqc_report = ch_multiqc_reports
     document       = ch_publishable_document
-    reports        = QUARTO_NOTEBOOK.out.html.map      { _meta, html     -> html     }
-    notebook       = QUARTO_NOTEBOOK.out.notebook.map  { _meta, qmd      -> qmd      }
+    // A run renders one notebook, so expose these as single paths for provenance tracking.
+    reports        = QUARTO_NOTEBOOK.out.html.map      { _meta, html     -> html     }.first()
+    notebook       = QUARTO_NOTEBOOK.out.notebook.map  { _meta, qmd      -> qmd      }.first()
     artifacts      = QUARTO_NOTEBOOK.out.artifacts.map { _meta, artifact -> artifact } // channel: [ val(meta), path(artifacts/*) ]
     md5sum         = MD5SUM.out.checksum.map          { _meta, checksum -> checksum }
 }
