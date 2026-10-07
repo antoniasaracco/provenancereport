@@ -80,18 +80,7 @@ Changes in 'quarto/notebook/main.nf':
      tuple val("${task.process}"), val('quarto'), eval('quarto -v')                             , emit: versions_quarto   , topic: versions
      tuple val("${task.process}"), val('papermill'), eval('papermill --version | cut -f1 -d" "'), emit: versions_papermill, topic: versions
  
-@@ -64,10 +64,6 @@
-     export XDG_CACHE_HOME="./.xdg_cache_home"
-     export XDG_DATA_HOME="./.xdg_data_home"
- 
--    # Without a _quarto.yml here, Quarto searches parent directories for a project and can
--    # pick one outside the task (https://github.com/quarto-dev/quarto-cli/issues/14980)
--    [ -e _quarto.yml ] || printf 'project:\\n  type: default\\n' > _quarto.yml
--
-     # Fix Quarto for Apptainer (see https://community.seqera.io/t/confusion-over-why-a-tool-works-in-docker-but-fails-in-singularity-when-the-installation-doesnt-differ-i-e-using-wave-micromamba/1244)
-     ENV_QUARTO=/opt/conda/etc/conda/activate.d/quarto.sh
-     set +u
-@@ -89,17 +85,10 @@
+@@ -85,17 +85,10 @@
          --execute-params params.yml \\
          --output ${prefix}.html
  
@@ -111,7 +100,7 @@ Changes in 'quarto/notebook/main.nf':
      """
  
      stub:
-@@ -122,6 +111,6 @@
+@@ -118,6 +111,6 @@
  
      touch ${prefix}.html
      touch params.yml
