@@ -350,7 +350,7 @@ To change the resource requests, please see the [max resources](https://nf-co.re
 
 ### Custom Report Runtimes
 
-In some cases, you may wish to change the container or Conda environment used by `QUARTO_NOTEBOOK`. This is especially relevant for `nf-core/provenancereport`, because a custom Quarto notebook may require additional R, Python, Julia, system, or Quarto extension dependencies that are not available in the default runtime.
+In some cases, you may wish to change the container or Conda environment used by `QUARTO_NOTEBOOK`. This is especially relevant for `nf-core/provenancereport`, because a custom Quarto notebook may require additional R, Python, or system dependencies that are not available in the default runtime.
 
 You can provide any Quarto notebook with `--notebook`, as long as the runtime configured for `QUARTO_NOTEBOOK` contains Quarto plus all packages required by that notebook. Override the process runtime in a Nextflow config file. For a container runtime:
 
