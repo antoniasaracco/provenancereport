@@ -36,13 +36,14 @@ The default workflow performs the following steps:
 
 1. Validate and normalise the input samplesheet with `nf-schema`.
 2. Resolve each `path` entry from the samplesheet as one input file.
-3. Render one Quarto notebook with all listed files and record package versions from the notebook session using the nf-core `quarto_notebook` module.
-4. Calculate MD5 checksums for every samplesheet input, the rendered Quarto HTML, and the optional review document using the nf-core `md5sum` module.
-5. Run `REPORTENVIRONMENT` in the resolved Quarto runtime to collect the R session, Python version, and container or Conda environment details.
-6. If `--document` is provided, publish the review or sign-off document with the pipeline results.
-7. Generate a MultiQC audit report containing the input samplesheet, file checksums, published outputs, run configuration, software versions, and runtime information.
-8. Generate BCO and Workflow Run RO-Crate provenance with the `nf-prov` plugin.
-9. Publish the reports, artifacts, checksums, and standard Nextflow execution metadata.
+3. Create a cached, traceable notebook copy with a guarded R or Python package-version fallback.
+4. Render one Quarto notebook with all listed files and record package versions from the notebook session using the nf-core `quarto_notebook` module.
+5. Calculate MD5 checksums for every samplesheet input, the rendered Quarto HTML, and the optional review document using the nf-core `md5sum` module.
+6. Run `REPORTENVIRONMENT` in the resolved Quarto runtime to collect the R session, Python version, and container or Conda environment details.
+7. If `--document` is provided, publish the review or sign-off document with the pipeline results.
+8. Generate a MultiQC audit report containing the input samplesheet, file checksums, published outputs, run configuration, software versions, and runtime information.
+9. Generate BCO and Workflow Run RO-Crate provenance with the `nf-prov` plugin.
+10. Publish the reports, artifacts, checksums, and standard Nextflow execution metadata.
 
 ![nf-core/provenancereport metro map](docs/images/provenancereport_metro.svg)
 
@@ -76,7 +77,7 @@ By default, the pipeline renders the bundled notebook in `assets/provenance_repo
 
 Report inputs are staged into the Quarto render working directory by basename. Custom notebooks should read those staged filenames directly, for example `readxl::read_xlsx("counts.xlsx")`, and every file listed in the samplesheet must have a unique basename. See the usage documentation for details on designing custom reports.
 
-Custom notebooks should write the packages they use to `versions.csv` as `package,version` rows. This explicit file is authoritative. If it is absent, the pipeline finds packages referenced directly in an R/knitr or Python/Jupyter notebook and appends a hidden final cell to an internal copy to record their installed versions. The original notebook is never modified. See the [package-version guidance](docs/usage.md#recording-notebook-package-versions) for examples and limitations.
+Custom notebooks should write the packages they use to `versions.csv` as `package,version` rows when a curated direct-dependency list is required. This explicit file is authoritative. The pipeline always appends a guarded hidden cell to an internal notebook copy; when no explicit file exists, that cell records packages loaded at runtime in the R session or Python kernel. The original notebook is never modified. See the [package-version guidance](docs/usage.md#recording-notebook-package-versions) for examples and limitations.
 
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/running/run-pipelines#using-parameter-files).
@@ -87,7 +88,7 @@ For more details and further functionality, please refer to the [usage documenta
 
 A successful run produces:
 
-- `quartonotebook/*.html`: the rendered Quarto report, plus the source notebook and any report artifacts.
+- `quartonotebook/*.html`: the rendered Quarto report, plus the prepared source notebook and any report artifacts.
 - `md5sum/provenancereport.md5`: checksums for every samplesheet input, the rendered report, and the optional review document.
 - `multiqc/multiqc_report.html`: an audit report covering inputs, checksums, outputs, parameters, software versions, and the report runtime.
 - `pipeline_info/manifest_<timestamp>.bco.json` and `ro-crate-metadata.json`: BCO and Workflow Run RO-Crate provenance.

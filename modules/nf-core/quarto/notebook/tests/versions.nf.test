@@ -1,0 +1,85 @@
+nextflow_process {
+
+    name "Test Process QUARTO_NOTEBOOK version output"
+    script "../main.nf"
+    process "QUARTO_NOTEBOOK"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "quarto"
+    tag "quarto/notebook"
+    tag "quarto_versions_validation"
+
+    test("test notebook - explicit versions.csv remains authoritative") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'explicit_versions' ],
+                    file("${projectDir}/modules/nf-core/quarto/notebook/tests/assets/explicit_versions.qmd", checkIfExists: true)
+                ]
+                input[1] = [:]
+                input[2] = []
+                input[3] = []
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.versions[0]).text.contains('curated-package: "1.50"') },
+            )
+        }
+    }
+
+    test("test notebook - reject missing versions.csv") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'missing_versions' ],
+                    file("${projectDir}/modules/nf-core/quarto/notebook/tests/assets/missing_versions.qmd", checkIfExists: true)
+                ]
+                input[1] = [:]
+                input[2] = []
+                input[3] = []
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains('versions.csv not found or empty') },
+            )
+        }
+    }
+
+    test("test notebook - reject malformed versions.csv") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'malformed_versions' ],
+                    file("${projectDir}/modules/nf-core/quarto/notebook/tests/assets/malformed_versions.qmd", checkIfExists: true)
+                ]
+                input[1] = [:]
+                input[2] = []
+                input[3] = []
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains('exactly two non-empty comma-separated fields') },
+            )
+        }
+    }
+}

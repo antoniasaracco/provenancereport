@@ -4,7 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 include { paramsSummaryMap                } from 'plugin/nf-schema'
-include { QUARTO_NOTEBOOK                  } from '../modules/nf-core/quarto/notebook/main'
+include { RENDER_QUARTO_WITH_PROVENANCE    } from '../subworkflows/local/render_quarto_with_provenance/main'
 include { REPORTENVIRONMENT               } from '../modules/local/reportenvironment/main'
 include { MD5SUM                          } from '../modules/nf-core/md5sum/main'
 include { MULTIQC                         } from '../modules/nf-core/multiqc/main'
@@ -31,17 +31,10 @@ workflow PROVENANCEREPORT {
 
     ch_multiqc_reports = channel.empty()
 
-    // Add a package-version fallback to a temporary copy before rendering.
-    def r_versions_cell = file("${projectDir}/assets/package_versions_r.qmd", checkIfExists: true)
-    def python_versions_cell = file("${projectDir}/assets/package_versions_python.qmd", checkIfExists: true)
-    def ch_prepared_notebook = ch_notebook.collectFile(sort: false) { notebook ->
-        [notebook.name, addPackageVersionsFallback(notebook, r_versions_cell, python_versions_cell)]
-    }
-
     ch_quarto_input = ch_samplesheet
         .collect(flat: false)
         .map { rows -> [rows] }
-        .combine(ch_prepared_notebook)
+        .combine(ch_notebook)
         .multiMap { rows, report_notebook ->
             def input_ids = rows.collect { meta, _input_file -> meta.id }
             def input_files = rows.collect { _meta, input_file -> input_file }
@@ -80,7 +73,7 @@ workflow PROVENANCEREPORT {
             []
         }
 
-    QUARTO_NOTEBOOK (
+    RENDER_QUARTO_WITH_PROVENANCE (
         ch_quarto_input.notebook,
         ch_quarto_input.parameters,
         ch_quarto_input.input_files,
@@ -88,7 +81,7 @@ workflow PROVENANCEREPORT {
     )
 
     REPORTENVIRONMENT (
-        QUARTO_NOTEBOOK.out.runtime_environment
+        RENDER_QUARTO_WITH_PROVENANCE.out.runtime_environment
     )
 
     //
@@ -96,7 +89,7 @@ workflow PROVENANCEREPORT {
     //
     def ch_checksum_files = ch_samplesheet
         .map { _meta, input_file -> input_file }
-        .mix(QUARTO_NOTEBOOK.out.html.map { _meta, report_file -> report_file })
+        .mix(RENDER_QUARTO_WITH_PROVENANCE.out.html.map { _meta, report_file -> report_file })
         .mix(ch_document)
         .collect()
         .map { files -> [[ id: 'provenancereport' ], files] }
@@ -127,8 +120,9 @@ workflow PROVENANCEREPORT {
         .map { process, tool, version ->
             def trimmed_version = version?.toString()?.trim()
             def process_name = process.toString()
+            def yaml_version = trimmed_version?.replace('\\', '\\\\')?.replace('"', '\\"')
             trimmed_version
-                ? [ process_name[process_name.lastIndexOf(':')+1..-1], "  ${tool}: ${trimmed_version}" ]
+                ? [ process_name[process_name.lastIndexOf(':')+1..-1], "  ${tool}: \"${yaml_version}\"" ]
                 : null
         }
         .groupTuple(by:0)
@@ -198,7 +192,7 @@ workflow PROVENANCEREPORT {
         REPORTENVIRONMENT.out.multiqc_r_session
     )
 
-    def ch_pipeline_outputs_rows = QUARTO_NOTEBOOK.out.html
+    def ch_pipeline_outputs_rows = RENDER_QUARTO_WITH_PROVENANCE.out.html
         .map { _meta, report ->
             [
                 file: report.getName(),
@@ -236,7 +230,8 @@ workflow PROVENANCEREPORT {
 
     def multiqc_versions_string = MULTIQC.out.versions
         .map { process, tool, version ->
-            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: ${version}" ]
+            def yaml_version = version.toString().replace('\\', '\\\\').replace('"', '\\"')
+            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: \"${yaml_version}\"" ]
         }
         .groupTuple(by:0)
         .map { process, tool_versions ->
@@ -260,91 +255,16 @@ workflow PROVENANCEREPORT {
             .mix(MULTIQC.out.plots.map  { _meta, plots  -> plots  })
 
     // Workflow outputs only publish files materialized in the work directory.
-    def ch_publishable_notebook = ch_notebook.collectFile()
     def ch_publishable_document = ch_document.collectFile()
 
     emit:
     versions       = ch_collated_versions                                // channel: [ path(versions.yml) ]
     multiqc_report = ch_multiqc_reports
     document       = ch_publishable_document
-    reports        = QUARTO_NOTEBOOK.out.html.map      { _meta, html     -> html     }.first()
-    notebook       = ch_publishable_notebook.first()
-    artifacts      = QUARTO_NOTEBOOK.out.artifacts.map { _meta, artifact -> artifact } // channel: [ val(meta), path(artifacts/*) ]
+    reports        = RENDER_QUARTO_WITH_PROVENANCE.out.html.map      { _meta, html     -> html     }
+    notebook       = RENDER_QUARTO_WITH_PROVENANCE.out.notebook.map  { _meta, qmd      -> qmd      }
+    artifacts      = RENDER_QUARTO_WITH_PROVENANCE.out.artifacts.map { _meta, artifact -> artifact } // channel: [ val(meta), path(artifacts/*) ]
     md5sum         = MD5SUM.out.checksum.map          { _meta, checksum -> checksum }
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    FUNCTIONS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-def addPackageVersionsFallback(notebook, r_versions_cell, python_versions_cell) {
-    def content = notebook.text
-
-    // The notebook already owns package reporting when it explicitly writes this file.
-    if (content.contains('versions.csv')) {
-        return content
-    }
-
-    def lines = content.readLines()
-    def name = notebook.name.toLowerCase()
-    def explicit_jupyter = lines.any { line -> line ==~ /^\s*jupyter\s*:.*$/ }
-    def explicit_knitr = lines.any { line -> line ==~ /^\s*engine\s*:\s*knitr\s*$/ }
-    def has_python_cell = (content =~ /(?m)^\s*```\{python(?:[ ,}]|$)/).find()
-    def has_r_cell = (content =~ /(?m)^\s*```\{r(?:[ ,}]|$)/).find()
-
-    def fallback
-    if (explicit_jupyter || (has_python_cell && !has_r_cell)) {
-        def modules = pythonModulesFromNotebook(content)
-        def modules_literal = modules ? '{' + modules.collect { module -> "'" + module + "'" }.join(', ') + '}' : 'set()'
-        fallback = python_versions_cell.text.replace('__NFCORE_PYTHON_MODULES__', modules_literal)
-    } else if (name.endsWith('.rmd') || explicit_knitr || (has_r_cell && !has_python_cell)) {
-        def packages = rPackagesFromNotebook(content)
-        def packages_literal = packages ? 'c(' + packages.collect { pkg -> '"' + pkg + '"' }.join(', ') + ')' : 'character()'
-        fallback = r_versions_cell.text.replace('__NFCORE_R_PACKAGES__', packages_literal)
-    } else {
-        error "Could not determine whether '${notebook.name}' uses R/knitr or Python/Jupyter. The notebook must write versions.csv explicitly."
-    }
-
-    "${content}${content.endsWith('\n') ? '' : '\n'}\n${fallback}\n"
-}
-
-def codeCellsFromNotebook(content, language) {
-    def pattern = java.util.regex.Pattern.compile(
-        "(?ms)^\\s*```\\{${java.util.regex.Pattern.quote(language)}(?:[^}]*)\\}\\s*\\n(.*?)^\\s*```\\s*(?:\\n|\\z)"
-    )
-    (content =~ pattern).collect { match -> match[1] }.join('\n')
-}
-
-def rPackagesFromNotebook(content) {
-    def source = codeCellsFromNotebook(content, 'r')
-    def packages = [] as Set
-
-    (source =~ /\b(?:library|require|requireNamespace)\s*\(\s*(?:package\s*=\s*)?(?:(["'])([^"']+)\1|([A-Za-z][A-Za-z0-9._]*))/).each { match ->
-        packages << (match[2] ?: match[3])
-    }
-    (source =~ /\b([A-Za-z][A-Za-z0-9._]*)\s*:{2,3}/).each { match ->
-        packages << match[1]
-    }
-
-    packages.sort()
-}
-
-def pythonModulesFromNotebook(content) {
-    def source = codeCellsFromNotebook(content, 'python')
-    def modules = [] as Set
-
-    (source =~ /(?m)^\s*import\s+([^#\n]+)/).each { match ->
-        match[1].split(',').each { import_name ->
-            modules << import_name.trim().split(/\s+as\s+/)[0].tokenize('.')[0]
-        }
-    }
-    (source =~ /(?m)^\s*from\s+([A-Za-z_][A-Za-z0-9_.]*)\s+import\s+/).each { match ->
-        modules << match[1].tokenize('.')[0]
-    }
-
-    modules.findAll { module -> module }.sort()
 }
 
 /*
