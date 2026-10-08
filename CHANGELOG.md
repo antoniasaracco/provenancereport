@@ -11,7 +11,9 @@ Initial release of nf-core/provenancereport, created with the [nf-core](https://
 
 - Validate and normalise samplesheets containing one or more report input files.
 - Render a bundled or user-provided Quarto notebook in a reproducible container or Conda environment.
+- Capture package versions loaded by R/knitr or Python/Jupyter notebooks, while preserving an explicitly generated `versions.csv` as the authoritative record.
 - Publish the rendered HTML report, source notebook, and report-generated artifacts.
+- Index the rendered report and prepared notebook outputs so they are included in Workflow Run RO-Crate provenance.
 - Generate MD5 checksums for all report inputs and the rendered report.
 - Capture the report runtime environment, including container or Conda details, R session information, and the Python version.
 - Generate a MultiQC audit report containing inputs, outputs, checksums, parameters, software versions, and runtime metadata.
