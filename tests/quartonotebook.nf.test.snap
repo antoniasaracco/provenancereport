@@ -8,14 +8,14 @@
                 "MULTIQC": {
                     "multiqc": "1.35"
                 },
-                "PREPARE_QUARTO_NOTEBOOK": {
-                    "python": "3.12.11",
-                    "pyyaml": "6.0.2"
-                },
                 "QUARTO_NOTEBOOK": {
                     "R": "4.4.3",
                     "papermill": "2.6.0",
                     "quarto": "1.7.31"
+                },
+                "QUARTO_PREPARE": {
+                    "python": "3.12.11",
+                    "pyyaml": "6.0.2"
                 },
                 "Workflow": {
                     "nf-core/provenancereport": "v1.0.0"

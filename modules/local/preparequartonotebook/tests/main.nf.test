@@ -1,8 +1,8 @@
 nextflow_process {
 
-    name "Test Process PREPARE_QUARTO_NOTEBOOK"
+    name "Test Process QUARTO_PREPARE"
     script "../main.nf"
-    process "PREPARE_QUARTO_NOTEBOOK"
+    process "QUARTO_PREPARE"
 
     tag "modules"
     tag "modules_local"

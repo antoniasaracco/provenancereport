@@ -4,14 +4,14 @@
             {
                 "versions_python": [
                     [
-                        "PREPARE_QUARTO_NOTEBOOK",
+                        "QUARTO_PREPARE",
                         "python",
                         "3.12.11"
                     ]
                 ],
                 "versions_pyyaml": [
                     [
-                        "PREPARE_QUARTO_NOTEBOOK",
+                        "QUARTO_PREPARE",
                         "pyyaml",
                         "6.0.2"
                     ]

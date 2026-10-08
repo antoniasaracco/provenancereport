@@ -1,5 +1,5 @@
-include { PREPARE_QUARTO_NOTEBOOK } from '../../../modules/local/preparequartonotebook/main'
-include { QUARTO_NOTEBOOK         } from '../../../modules/nf-core/quarto/notebook/main'
+include { QUARTO_PREPARE  } from '../../../modules/local/preparequartonotebook/main'
+include { QUARTO_NOTEBOOK } from '../../../modules/nf-core/quarto/notebook/main'
 
 workflow RENDER_QUARTO_WITH_PROVENANCE {
 
@@ -10,12 +10,12 @@ workflow RENDER_QUARTO_WITH_PROVENANCE {
     ch_extensions
 
     main:
-    PREPARE_QUARTO_NOTEBOOK (
+    QUARTO_PREPARE (
         ch_notebook
     )
 
     QUARTO_NOTEBOOK (
-        PREPARE_QUARTO_NOTEBOOK.out.notebook,
+        QUARTO_PREPARE.out.notebook,
         ch_parameters,
         ch_input_files,
         ch_extensions,

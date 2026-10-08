@@ -160,7 +160,7 @@ with open("versions.csv", "w", newline="", encoding="utf-8") as handle:
     )
 ```
 
-Before rendering, `PREPARE_QUARTO_NOTEBOOK` parses the initial Quarto YAML front matter and code-cell languages to identify R/knitr or Python/Jupyter. It always appends a hidden final cell to a temporary notebook copy. The original notebook is not changed. During rendering, the cell first checks whether the notebook has already created `versions.csv`; if it has, the explicit file is left untouched. Otherwise, the fallback records runtime-loaded packages from the same R session or Jupyter kernel:
+Before rendering, `QUARTO_PREPARE` parses the initial Quarto YAML front matter and code-cell languages to identify R/knitr or Python/Jupyter. It always appends a hidden final cell to a temporary notebook copy. The original notebook is not changed. During rendering, the cell first checks whether the notebook has already created `versions.csv`; if it has, the explicit file is left untouched. Otherwise, the fallback records runtime-loaded packages from the same R session or Jupyter kernel:
 
 - R records the R version and every namespace still returned by `loadedNamespaces()` at the end of execution.
 - Python records the Python version and installed distributions mapped from the top-level module names present in `sys.modules` at the end of execution.
@@ -187,7 +187,7 @@ The main workflow performs ten steps:
 
 1. `PIPELINE_INITIALISATION` validates `--input` with the `nf-schema` plugin and resolves each `path` entry as a single file.
 2. The workflow selects the notebook using `--notebook`, or the bundled `assets/provenance_report.qmd` if `--notebook` is unset.
-3. `RENDER_QUARTO_WITH_PROVENANCE` coordinates notebook preparation and rendering. Inside it, `PREPARE_QUARTO_NOTEBOOK` creates a traceable, cached notebook copy containing the guarded R or Python runtime-version fallback.
+3. `RENDER_QUARTO_WITH_PROVENANCE` coordinates notebook preparation and rendering. Inside it, `QUARTO_PREPARE` creates a traceable, cached notebook copy containing the guarded R or Python runtime-version fallback.
 4. Within the same subworkflow, `QUARTO_NOTEBOOK` renders one Quarto HTML report using all samplesheet rows. The process receives `[meta, notebook]`, a parameter map, and the actual input files as a plain path channel. It preserves an explicit `versions.csv` or uses the appended fallback, converts the package rows to `versions.yml`, and also reports Quarto and Papermill through its eval outputs.
 5. `MD5SUM` calculates MD5 checksums for every samplesheet input, the rendered Quarto HTML report, and the review document when `--document` is provided.
 6. `REPORTENVIRONMENT` receives the resolved `QUARTO_NOTEBOOK` runtime metadata and inherits the matching container image or Conda environment when one is configured. It captures the runtime backend, runtime reference, `R sessionInfo()`, and Python version. Missing R or Python installations are reported as unavailable without failing the run.

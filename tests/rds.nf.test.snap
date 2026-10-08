@@ -8,10 +8,6 @@
                 "MULTIQC": {
                     "multiqc": "1.35"
                 },
-                "PREPARE_QUARTO_NOTEBOOK": {
-                    "python": "3.14.6",
-                    "pyyaml": "6.0.3"
-                },
                 "QUARTO_NOTEBOOK": {
                     "Biobase": "2.70.0",
                     "BiocGenerics": "0.56.0",
@@ -55,6 +51,10 @@
                     "utils": "4.5.3",
                     "xfun": "0.60",
                     "yaml": "2.3.12"
+                },
+                "QUARTO_PREPARE": {
+                    "python": "3.12.11",
+                    "pyyaml": "6.0.2"
                 },
                 "Workflow": {
                     "nf-core/provenancereport": "v1.0.0"

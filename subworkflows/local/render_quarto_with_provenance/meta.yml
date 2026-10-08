@@ -7,7 +7,7 @@ keywords:
   - provenance
   - report
 components:
-  - prepare/quarto/notebook
+  - quarto/prepare
   - quarto/notebook
 input:
   - notebook:
