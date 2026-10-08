@@ -9,6 +9,8 @@
                     "multiqc": 1.35
                 },
                 "QUARTO_NOTEBOOK": {
+                    "R": "4.4.3",
+                    "knitr": 1.5,
                     "papermill": "2.6.0",
                     "quarto": "1.7.31"
                 },
@@ -17,7 +19,7 @@
                 }
             },
             [
-                "README.md:md5,6954d70e58f31256f01a03a7fc66ed70",
+                "README.md:md5,0703d583b4818af4a001faca89752bab",
                 "artifacts.csv",
                 "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
                 "md5sum",
@@ -50,7 +52,7 @@
                 "samplesheet.csv"
             ],
             [
-                "README.md:md5,6954d70e58f31256f01a03a7fc66ed70",
+                "README.md:md5,0703d583b4818af4a001faca89752bab",
                 "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "provenance_report_input_files.tsv:md5,1458dc07273f8a570beae2b5f4358a49",
@@ -75,6 +77,8 @@
                     "multiqc": 1.35
                 },
                 "QUARTO_NOTEBOOK": {
+                    "R": "4.4.3",
+                    "knitr": 1.5,
                     "papermill": "2.6.0",
                     "quarto": "1.7.31"
                 },
@@ -83,7 +87,7 @@
                 }
             },
             [
-                "README.md:md5,6954d70e58f31256f01a03a7fc66ed70",
+                "README.md:md5,0703d583b4818af4a001faca89752bab",
                 "artifacts.csv",
                 "document.csv",
                 "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
@@ -118,7 +122,7 @@
                 "samplesheet.csv"
             ],
             [
-                "README.md:md5,6954d70e58f31256f01a03a7fc66ed70",
+                "README.md:md5,0703d583b4818af4a001faca89752bab",
                 "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "provenance_report_input_files.tsv:md5,1458dc07273f8a570beae2b5f4358a49",

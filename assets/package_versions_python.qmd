@@ -1,0 +1,28 @@
+```{python}
+#| label: nf-core-package-versions
+#| include: false
+import csv as _nfcore_csv
+import importlib.metadata as _nfcore_metadata
+import os as _nfcore_os
+import platform as _nfcore_platform
+
+if not _nfcore_os.path.exists("versions.csv"):
+    _nfcore_package_map = _nfcore_metadata.packages_distributions()
+    _nfcore_modules = __NFCORE_PYTHON_MODULES__
+    _nfcore_distributions = sorted({
+        distribution
+        for module in _nfcore_modules
+        for distribution in _nfcore_package_map.get(module, [])
+    }, key=str.lower)
+    _nfcore_versions = [("python", _nfcore_platform.python_version())]
+    for _nfcore_distribution in _nfcore_distributions:
+        try:
+            _nfcore_versions.append((
+                _nfcore_distribution,
+                _nfcore_metadata.version(_nfcore_distribution),
+            ))
+        except _nfcore_metadata.PackageNotFoundError:
+            pass
+    with open("versions.csv", "w", newline="", encoding="utf-8") as _nfcore_handle:
+        _nfcore_csv.writer(_nfcore_handle).writerows(_nfcore_versions)
+```

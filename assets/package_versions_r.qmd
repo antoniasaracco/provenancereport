@@ -1,0 +1,24 @@
+```{r}
+#| label: nf-core-package-versions
+#| include: false
+if (!file.exists("versions.csv")) {
+    packages <- __NFCORE_R_PACKAGES__
+    versions <- data.frame(
+        package = c("R", packages),
+        version = c(
+            as.character(getRversion()),
+            vapply(packages, function(package) {
+                as.character(utils::packageVersion(package))
+            }, character(1))
+        )
+    )
+    write.table(
+        versions,
+        "versions.csv",
+        sep = ",",
+        row.names = FALSE,
+        col.names = FALSE,
+        quote = FALSE
+    )
+}
+```

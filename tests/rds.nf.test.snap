@@ -9,6 +9,11 @@
                     "multiqc": 1.35
                 },
                 "QUARTO_NOTEBOOK": {
+                    "Matrix": "1.7.6",
+                    "R": "4.5.3",
+                    "SummarizedExperiment": "1.40.0",
+                    "knitr": 1.51,
+                    "methods": "4.5.3",
                     "papermill": "2.7.0",
                     "quarto": "1.9.38"
                 },
@@ -17,7 +22,7 @@
                 }
             },
             [
-                "README.md:md5,6954d70e58f31256f01a03a7fc66ed70",
+                "README.md:md5,0703d583b4818af4a001faca89752bab",
                 "artifacts.csv",
                 "external_rds_report.qmd",
                 "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
@@ -50,7 +55,7 @@
                 "samplesheet_rds.csv"
             ],
             [
-                "README.md:md5,6954d70e58f31256f01a03a7fc66ed70",
+                "README.md:md5,0703d583b4818af4a001faca89752bab",
                 "external_rds_report.qmd:md5,33c6e034d026f8d8d619711bec521665",
                 "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",

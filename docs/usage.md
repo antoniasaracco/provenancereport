@@ -116,6 +116,59 @@ cohort_b,cohort_b/input/expression.xlsx
 
 Input paths must not contain commas because the staged basenames are passed to the notebook as the comma-separated `params$input_files` value.
 
+### Recording notebook package versions
+
+Custom notebooks should write a `versions.csv` file in the notebook working directory. Each row contains a package name and version:
+
+```csv title="versions.csv"
+dplyr,1.1.4
+readxl,1.4.5
+```
+
+Do not include a header row. An explicit file is authoritative and lets the report author decide which direct dependencies belong in the audit record.
+
+For an R notebook, this can be generated from a list of packages used by the report:
+
+```r
+packages <- c("dplyr", "readxl")
+versions <- data.frame(
+    package = packages,
+    version = vapply(packages, function(package) {
+        as.character(utils::packageVersion(package))
+    }, character(1))
+)
+write.table(
+    versions,
+    "versions.csv",
+    sep = ",",
+    row.names = FALSE,
+    col.names = FALSE,
+    quote = FALSE
+)
+```
+
+For a Python notebook:
+
+```python
+import csv
+from importlib import metadata
+
+packages = ["pandas", "matplotlib"]
+with open("versions.csv", "w", newline="", encoding="utf-8") as handle:
+    csv.writer(handle).writerows(
+        (package, metadata.version(package)) for package in packages
+    )
+```
+
+Before `QUARTO_NOTEBOOK` runs, the workflow checks the notebook source for `versions.csv`. If it is not present, the workflow identifies R/knitr or Python/Jupyter from the notebook configuration and code-cell language, then appends a hidden final cell to a temporary copy. The fallback executes after the report code in the same R session or Jupyter kernel:
+
+- R records the R version and packages referenced directly through `library()`, `require()`, `requireNamespace()`, or `package::function` calls.
+- Python records the Python version and installed distributions corresponding to direct `import` and `from ... import ...` statements.
+
+The original notebook is not changed, and an existing `versions.csv` is never overwritten. Static discovery may miss packages loaded indirectly, through dynamically constructed names, from sourced scripts, or through unusual multiline syntax. Python's module-to-distribution mapping may also omit editable or unpackaged modules. For that reason, writing `versions.csv` explicitly is the definitive option. Other Quarto engines must provide the file themselves.
+
+The CSV is an internal, language-neutral interchange file. The module converts it to the process-keyed `versions.yml` required by the Nextflow `versions` topic; that YAML is what the workflow sends to MultiQC.
+
 ## Review document input
 
 Use `--document` to attach a review or sign-off file to the run, for example a completed checklist, SOP, approval form, or other traceability record:
@@ -132,7 +185,7 @@ The main workflow performs nine steps:
 
 1. `PIPELINE_INITIALISATION` validates `--input` with the `nf-schema` plugin and resolves each `path` entry as a single file.
 2. The workflow selects the notebook using `--notebook`, or the bundled `assets/provenance_report.qmd` if `--notebook` is unset.
-3. `QUARTO_NOTEBOOK` renders one Quarto HTML report using all samplesheet rows. The process receives `[meta, notebook]`, a parameter map, and the actual input files as a plain path channel. Its official eval outputs provide versions for software present in its runtime environment; empty version values are discarded.
+3. `QUARTO_NOTEBOOK` renders one Quarto HTML report using all samplesheet rows. The process receives `[meta, notebook]`, a parameter map, and the actual input files as a plain path channel. It preserves a user-provided `versions.csv` or adds an R/Python fallback to an internal notebook copy, converts the package rows to `versions.yml`, and also reports Quarto and Papermill through its eval outputs.
 4. `MD5SUM` calculates MD5 checksums for every samplesheet input, the rendered Quarto HTML report, and the review document when `--document` is provided.
 5. `REPORTENVIRONMENT` receives the resolved `QUARTO_NOTEBOOK` runtime metadata and inherits the matching container image or Conda environment when one is configured. It captures the runtime backend, runtime reference, `R sessionInfo()`, and Python version. Missing R or Python installations are reported as unavailable without failing the run.
 6. If `--document` is set, the workflow publishes the supplied review file with the results.

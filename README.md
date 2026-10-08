@@ -36,7 +36,7 @@ The default workflow performs the following steps:
 
 1. Validate and normalise the input samplesheet with `nf-schema`.
 2. Resolve each `path` entry from the samplesheet as one input file.
-3. Render one Quarto notebook with all listed files using the nf-core `quarto_notebook` module.
+3. Render one Quarto notebook with all listed files and record package versions from the notebook session using the nf-core `quarto_notebook` module.
 4. Calculate MD5 checksums for every samplesheet input, the rendered Quarto HTML, and the optional review document using the nf-core `md5sum` module.
 5. Run `REPORTENVIRONMENT` in the resolved Quarto runtime to collect the R session, Python version, and container or Conda environment details.
 6. If `--document` is provided, publish the review or sign-off document with the pipeline results.
@@ -75,6 +75,8 @@ nextflow run nf-core/provenancereport \
 By default, the pipeline renders the bundled notebook in `assets/provenance_report.qmd`. To render your own custom Quarto notebook, provide `--notebook custom_report.qmd`.
 
 Report inputs are staged into the Quarto render working directory by basename. Custom notebooks should read those staged filenames directly, for example `readxl::read_xlsx("counts.xlsx")`, and every file listed in the samplesheet must have a unique basename. See the usage documentation for details on designing custom reports.
+
+Custom notebooks should write the packages they use to `versions.csv` as `package,version` rows. This explicit file is authoritative. If it is absent, the pipeline finds packages referenced directly in an R/knitr or Python/Jupyter notebook and appends a hidden final cell to an internal copy to record their installed versions. The original notebook is never modified. See the [package-version guidance](docs/usage.md#recording-notebook-package-versions) for examples and limitations.
 
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/running/run-pipelines#using-parameter-files).
