@@ -59,10 +59,8 @@
                 "README.md:md5,a7ba1823957aba61b7c6036e6aeab137",
                 "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
-                "notebook.csv:md5,a0c4dec0ebe4924a21fe155b987c2047",
                 "artifact.txt:md5,b10a8db164e0754105b7a99be72e3fe5",
                 "prepared_quarto_r.qmd:md5,a00a042a7a00a18d4859c8b783c0df24",
-                "reports.csv:md5,e226e2c69791dc1b4982dc283f16e56e",
                 "samplesheet_quartonotebook.csv:md5,33cd9804d52f8ff96e2244df29e5cd2a"
             ]
         ],
