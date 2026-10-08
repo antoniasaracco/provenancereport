@@ -12,6 +12,8 @@ The directories listed below will be created in the results directory after the 
 | ------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | Rendered report           | `quartonotebook/*.html`                       | Final Quarto HTML report generated from all samplesheet inputs.                                   |
 | Report source             | `quartonotebook/*.qmd`                        | Prepared notebook copy used to render the report, including the guarded package-version fallback. |
+| Rendered report index     | `reports.csv`                                 | Nextflow-generated index of the published HTML report.                                            |
+| Report source index       | `notebook.csv`                                | Nextflow-generated index of the published prepared notebook.                                      |
 | Report artifacts          | `quartonotebook/artifacts/*`                  | Images, tables, summaries, or other secondary files written by the notebook.                      |
 | Report artifact index     | `artifacts.csv`                               | Nextflow-generated index of the published report artifacts.                                       |
 | File checksums            | `md5sum/provenancereport.md5`                 | MD5 checksums for every samplesheet input, the rendered report, and the optional review document. |
@@ -43,6 +45,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and renders Qua
 - `quartonotebook/`
   - `*.html`: One rendered HTML report for the full samplesheet. The default filename is based on the notebook name, for example `provenance_report.html`.
   - `*.qmd`: The prepared Quarto notebook used to generate the report. Its name is prefixed with `prepared_` to distinguish it from the unchanged source notebook.
+- `reports.csv`: Nextflow-generated index containing the published HTML report path.
+- `notebook.csv`: Nextflow-generated index containing the published prepared-notebook path.
 
 </details>
 

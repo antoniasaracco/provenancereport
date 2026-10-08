@@ -41,9 +41,9 @@
                 }
             },
             [
-                "README.md:md5,5abd60d0473b9a412a3fd16b1b73b2b2",
+                "README.md:md5,a7ba1823957aba61b7c6036e6aeab137",
                 "artifacts.csv",
-                "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
+                "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "md5sum",
                 "md5sum/provenancereport.md5",
                 "multiqc",
@@ -63,6 +63,7 @@
                 "multiqc_report.csv",
                 "nextflow.config:md5,86567217d8527a2d1544c3d9e8c09806",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
+                "notebook.csv",
                 "pipeline_info",
                 "pipeline_info/nf_core_provenancereport_software_mqc_versions.yml",
                 "quartonotebook",
@@ -71,11 +72,12 @@
                 "quartonotebook/artifacts/provenance_report_summary.txt",
                 "quartonotebook/prepared_provenance_report.qmd",
                 "quartonotebook/provenance_report.html",
+                "reports.csv",
                 "samplesheet.csv"
             ],
             [
-                "README.md:md5,5abd60d0473b9a412a3fd16b1b73b2b2",
-                "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
+                "README.md:md5,a7ba1823957aba61b7c6036e6aeab137",
+                "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "provenance_report_input_files.tsv:md5,1458dc07273f8a570beae2b5f4358a49",
                 "provenance_report_summary.txt:md5,b32c187edd9b5ec9c088a0d2a41ff01d",
@@ -83,7 +85,7 @@
                 "samplesheet.csv:md5,760077fbeb3954e468d83244325f4ade"
             ]
         ],
-        "timestamp": "2026-10-08T17:39:46.466840226",
+        "timestamp": "2026-10-08T17:41:46.160151316",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
@@ -131,10 +133,10 @@
                 }
             },
             [
-                "README.md:md5,5abd60d0473b9a412a3fd16b1b73b2b2",
+                "README.md:md5,a7ba1823957aba61b7c6036e6aeab137",
                 "artifacts.csv",
                 "document.csv",
-                "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
+                "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "md5sum",
                 "md5sum/provenancereport.md5",
                 "multiqc",
@@ -154,6 +156,7 @@
                 "multiqc_report.csv",
                 "nextflow.config:md5,86567217d8527a2d1544c3d9e8c09806",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
+                "notebook.csv",
                 "pipeline_info",
                 "pipeline_info/nf_core_provenancereport_software_mqc_versions.yml",
                 "quartonotebook",
@@ -162,12 +165,13 @@
                 "quartonotebook/artifacts/provenance_report_summary.txt",
                 "quartonotebook/prepared_provenance_report.qmd",
                 "quartonotebook/provenance_report.html",
+                "reports.csv",
                 "review_signoff.md",
                 "samplesheet.csv"
             ],
             [
-                "README.md:md5,5abd60d0473b9a412a3fd16b1b73b2b2",
-                "main.nf:md5,876d1957e50a8e0bc092fc89c0f90d04",
+                "README.md:md5,a7ba1823957aba61b7c6036e6aeab137",
+                "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "provenance_report_input_files.tsv:md5,1458dc07273f8a570beae2b5f4358a49",
                 "provenance_report_summary.txt:md5,b32c187edd9b5ec9c088a0d2a41ff01d",
@@ -176,7 +180,7 @@
                 "samplesheet.csv:md5,760077fbeb3954e468d83244325f4ade"
             ]
         ],
-        "timestamp": "2026-10-08T17:40:20.529414504",
+        "timestamp": "2026-10-08T17:42:19.996738702",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

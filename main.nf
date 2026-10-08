@@ -116,10 +116,16 @@ output {
     reports {
         path 'quartonotebook'
         mode params.publish_dir_mode
+        index {
+            path 'reports.csv'
+        }
     }
     notebook {
         path 'quartonotebook'
         mode params.publish_dir_mode
+        index {
+            path 'notebook.csv'
+        }
     }
     artifacts {
         path 'quartonotebook'

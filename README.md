@@ -88,7 +88,7 @@ For more details and further functionality, please refer to the [usage documenta
 
 A successful run produces:
 
-- `quartonotebook/*.html`: the rendered Quarto report, plus the prepared source notebook and any report artifacts.
+- `quartonotebook/*.html`: the rendered Quarto report, plus the prepared source notebook and any report artifacts. `reports.csv`, `notebook.csv`, and `artifacts.csv` index those published outputs for provenance reporting.
 - `md5sum/provenancereport.md5`: checksums for every samplesheet input, the rendered report, and the optional review document.
 - `multiqc/multiqc_report.html`: an audit report covering inputs, checksums, outputs, parameters, software versions, and the report runtime.
 - `pipeline_info/manifest_<timestamp>.bco.json` and `ro-crate-metadata.json`: BCO and Workflow Run RO-Crate provenance.

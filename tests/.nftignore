@@ -11,3 +11,5 @@ nextflow.config
 artifacts.csv
 multiqc_report.csv
 document.csv
+reports.csv
+notebook.csv
