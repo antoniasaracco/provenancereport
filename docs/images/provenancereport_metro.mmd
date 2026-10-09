@@ -22,6 +22,7 @@ graph LR
     end
 
     subgraph provenance [Provenance report]
+        preparequartonotebook[QUARTO_PREPARE]
         quartonotebook[QUARTONOTEBOOK]
         md5sum[MD5SUM]
         reportenvironment[REPORTENVIRONMENT]
@@ -39,8 +40,9 @@ graph LR
     end
 
     samplesheet -->|report| quartonotebook
-    custom_report -->|report| quartonotebook
+    custom_report -->|report| preparequartonotebook
     custom_config -->|report| quartonotebook
+    preparequartonotebook -->|report| quartonotebook
     quartonotebook -->|report| quarto_report
     quartonotebook -->|report| md5sum
     quartonotebook -->|report| reportenvironment

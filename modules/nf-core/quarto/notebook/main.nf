@@ -86,10 +86,20 @@ process QUARTO_NOTEBOOK {
         --execute-params params.yml \\
         --output ${prefix}.html
 
+    # Check that notebook package versions were exported in the expected format
+    if [ ! -s versions.csv ]; then
+        echo "ERROR: versions.csv not found or empty; the notebook must write out [tool,version] pairs used within it." >&2
+        exit 1
+    fi
+    if ! awk -F',' 'NF != 2 || \$1 == "" || \$2 == "" { exit 1 }' versions.csv; then
+        echo "ERROR: versions.csv must contain exactly two non-empty comma-separated fields per row: package,version." >&2
+        exit 1
+    fi
+
     # Write notebook package versions to YAML
     cat <<- END_VERSIONS > versions.yml
     "${task.process}":
-    \$(awk -F',' '{printf "    %s: %s\\n", \$1, \$2}' versions.csv)
+    \$(awk -F',' '{printf "    %s: \\"%s\\"\\n", \$1, \$2}' versions.csv)
     END_VERSIONS
     """
 
