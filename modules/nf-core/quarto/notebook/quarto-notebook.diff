@@ -1,5 +1,23 @@
 Changes in component 'nf-core/quarto/notebook'
-'modules/nf-core/quarto/notebook/environment.yml' is unchanged
+Changes in 'quarto/notebook/environment.yml':
+--- modules/nf-core/quarto/notebook/environment.yml
++++ modules/nf-core/quarto/notebook/environment.yml
+@@ -11,4 +11,14 @@
+   - conda-forge::python=3.12.11
+   - conda-forge::quarto=1.7.31
+   - conda-forge::r-base=4.4.3
++  - conda-forge::r-cli=3.6.5
++  - conda-forge::r-digest=0.6.37
++  - conda-forge::r-evaluate=1.0.3
++  - conda-forge::r-fastmap=1.2.0
++  - conda-forge::r-htmltools=0.5.8.1
++  - conda-forge::r-jsonlite=2.0.0
++  - conda-forge::r-knitr=1.50
++  - conda-forge::r-rlang=1.1.6
+   - conda-forge::r-rmarkdown=2.29
++  - conda-forge::r-xfun=0.52
++  - conda-forge::r-yaml=2.3.10
+
 Changes in 'quarto/notebook/meta.yml':
 --- modules/nf-core/quarto/notebook/meta.yml
 +++ modules/nf-core/quarto/notebook/meta.yml
@@ -24,6 +42,17 @@ Changes in 'quarto/notebook/meta.yml':
 Changes in 'quarto/notebook/main.nf':
 --- modules/nf-core/quarto/notebook/main.nf
 +++ modules/nf-core/quarto/notebook/main.nf
+@@ -13,8 +13,8 @@
+     label 'process_low'
+     conda "${moduleDir}/environment.yml"
+     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+-        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data'
+-        : 'community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665'}"
++        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ec/ec8c258080a471b16bd374ed512643d60203e1dda1b804a26a52f5e7eab3afc4/data'
++        : 'community.wave.seqera.io/library/jupyter_matplotlib_papermill_python_pruned:bb34e6c00de390f3'}"
+
+     input:
+     tuple val(meta), path(notebook)
 @@ -28,6 +28,7 @@
      tuple val(meta), path("params.yml")                                                        , emit: params_yaml
      tuple val(meta), path("${notebook_parameters.artifact_dir}/*")                             , emit: artifacts  , optional: true
