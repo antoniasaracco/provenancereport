@@ -1,23 +1,5 @@
 Changes in component 'nf-core/quarto/notebook'
-Changes in 'quarto/notebook/environment.yml':
---- modules/nf-core/quarto/notebook/environment.yml
-+++ modules/nf-core/quarto/notebook/environment.yml
-@@ -11,4 +11,14 @@
-   - conda-forge::python=3.12.11
-   - conda-forge::quarto=1.7.31
-   - conda-forge::r-base=4.4.3
-+  - conda-forge::r-cli=3.6.5
-+  - conda-forge::r-digest=0.6.37
-+  - conda-forge::r-evaluate=1.0.3
-+  - conda-forge::r-fastmap=1.2.0
-+  - conda-forge::r-htmltools=0.5.8.1
-+  - conda-forge::r-jsonlite=2.0.0
-+  - conda-forge::r-knitr=1.50
-+  - conda-forge::r-rlang=1.1.6
-   - conda-forge::r-rmarkdown=2.29
-+  - conda-forge::r-xfun=0.52
-+  - conda-forge::r-yaml=2.3.10
-
+'modules/nf-core/quarto/notebook/environment.yml' is unchanged
 Changes in 'quarto/notebook/meta.yml':
 --- modules/nf-core/quarto/notebook/meta.yml
 +++ modules/nf-core/quarto/notebook/meta.yml
@@ -42,17 +24,6 @@ Changes in 'quarto/notebook/meta.yml':
 Changes in 'quarto/notebook/main.nf':
 --- modules/nf-core/quarto/notebook/main.nf
 +++ modules/nf-core/quarto/notebook/main.nf
-@@ -13,8 +13,8 @@
-     label 'process_low'
-     conda "${moduleDir}/environment.yml"
-     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
--        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/28/28717ccd9ce22dbfc219f3db088d5a1fc2ca1f575b5c65621218596dcdbaac95/data'
--        : 'community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665'}"
-+        ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ec/ec8c258080a471b16bd374ed512643d60203e1dda1b804a26a52f5e7eab3afc4/data'
-+        : 'community.wave.seqera.io/library/jupyter_matplotlib_papermill_python_pruned:bb34e6c00de390f3'}"
-
-     input:
-     tuple val(meta), path(notebook)
 @@ -28,6 +28,7 @@
      tuple val(meta), path("params.yml")                                                        , emit: params_yaml
      tuple val(meta), path("${notebook_parameters.artifact_dir}/*")                             , emit: artifacts  , optional: true
@@ -64,7 +35,7 @@ Changes in 'quarto/notebook/main.nf':
 @@ -85,16 +86,20 @@
          --execute-params params.yml \\
          --output ${prefix}.html
-
+ 
 -    # Check that notebook package versions is exported
 -    if [ ! -f versions.csv ]; then
 -        echo "ERROR: versions.csv not found; the notebook must write out [tool,version] pairs used within it." >&2
@@ -77,7 +48,7 @@ Changes in 'quarto/notebook/main.nf':
 +        echo "ERROR: versions.csv must contain exactly two non-empty comma-separated fields per row: package,version." >&2
          exit 1
      fi
-
+ 
      # Write notebook package versions to YAML
      cat <<- END_VERSIONS > versions.yml
      "${task.process}":
@@ -85,7 +56,7 @@ Changes in 'quarto/notebook/main.nf':
 +    \$(awk -F',' '{printf "    %s: \\"%s\\"\\n", \$1, \$2}' versions.csv)
      END_VERSIONS
      """
-
+ 
 
 Changes in 'quarto/notebook/tests/main.nf.test':
 --- modules/nf-core/quarto/notebook/tests/main.nf.test
@@ -139,12 +110,11 @@ Changes in 'quarto/notebook/tests/main.nf.test':
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World') } },
 
-'modules/nf-core/quarto/notebook/tests/versions.nf.test' was created
 Changes in 'quarto/notebook/tests/main.nf.test.snap':
 --- modules/nf-core/quarto/notebook/tests/main.nf.test.snap
 +++ modules/nf-core/quarto/notebook/tests/main.nf.test.snap
 @@ -33,16 +33,23 @@
-
+                     
                  ],
                  "5": [
 +                    [
@@ -188,21 +158,6 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                  "versions": [
                      "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                  ],
-@@ -98,10 +112,10 @@
-                 ]
-             }
-         ],
--        "timestamp": "2026-08-18T09:19:47.986553",
--        "meta": {
--            "nf-test": "0.9.5",
--            "nextflow": "26.04.6"
-+        "timestamp": "2026-09-15T14:57:19.310800321",
-+        "meta": {
-+            "nf-test": "0.9.4",
-+            "nextflow": "25.10.4"
-         }
-     },
-     "test notebook - [qmd:r]": {
 @@ -135,6 +149,13 @@
              ],
              [
@@ -217,21 +172,6 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -142,10 +163,10 @@
-                 ]
-             ]
-         ],
--        "timestamp": "2026-08-18T15:12:25.10271",
--        "meta": {
--            "nf-test": "0.9.5",
--            "nextflow": "26.04.6"
-+        "timestamp": "2026-09-15T15:00:47.248242428",
-+        "meta": {
-+            "nf-test": "0.9.4",
-+            "nextflow": "25.10.4"
-         }
-     },
-     "test notebook - parametrized - [qmd:python]": {
 @@ -179,6 +200,13 @@
              ],
              [
@@ -246,21 +186,6 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -186,10 +214,10 @@
-                 ]
-             ]
-         ],
--        "timestamp": "2026-08-18T15:13:37.473159",
--        "meta": {
--            "nf-test": "0.9.5",
--            "nextflow": "26.04.6"
-+        "timestamp": "2026-09-15T15:01:49.074485571",
-+        "meta": {
-+            "nf-test": "0.9.4",
-+            "nextflow": "25.10.4"
-         }
-     },
-     "test notebook - parametrized - [rmd]": {
 @@ -223,6 +251,13 @@
              ],
              [
@@ -275,21 +200,6 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -230,10 +265,10 @@
-                 ]
-             ]
-         ],
--        "timestamp": "2026-08-18T15:13:53.297883",
--        "meta": {
--            "nf-test": "0.9.5",
--            "nextflow": "26.04.6"
-+        "timestamp": "2026-09-15T15:02:09.568888123",
-+        "meta": {
-+            "nf-test": "0.9.4",
-+            "nextflow": "25.10.4"
-         }
-     },
-     "test notebook - parametrized - [ipynb]": {
 @@ -267,6 +302,13 @@
              ],
              [
@@ -304,21 +214,6 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -274,10 +316,10 @@
-                 ]
-             ]
-         ],
--        "timestamp": "2026-08-18T15:14:10.605053",
--        "meta": {
--            "nf-test": "0.9.5",
--            "nextflow": "26.04.6"
-+        "timestamp": "2026-09-15T15:02:29.368701413",
-+        "meta": {
-+            "nf-test": "0.9.4",
-+            "nextflow": "25.10.4"
-         }
-     },
-     "test notebook - [qmd:python]": {
 @@ -311,6 +353,13 @@
              ],
              [
@@ -333,21 +228,6 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -318,10 +367,10 @@
-                 ]
-             ]
-         ],
--        "timestamp": "2026-08-18T15:12:45.306028",
--        "meta": {
--            "nf-test": "0.9.5",
--            "nextflow": "26.04.6"
-+        "timestamp": "2026-09-15T15:01:07.969193608",
-+        "meta": {
-+            "nf-test": "0.9.4",
-+            "nextflow": "25.10.4"
-         }
-     },
-     "test notebook - parametrized - [qmd:r]": {
 @@ -355,6 +404,13 @@
              ],
              [
@@ -362,23 +242,11 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                      {
                          "id": "test"
                      },
-@@ -362,10 +418,10 @@
-                 ]
-             ]
-         ],
--        "timestamp": "2026-08-18T15:13:18.571016",
--        "meta": {
--            "nf-test": "0.9.5",
--            "nextflow": "26.04.6"
-+        "timestamp": "2026-09-15T15:01:28.76675383",
-+        "meta": {
-+            "nf-test": "0.9.4",
-+            "nextflow": "25.10.4"
+@@ -368,4 +424,4 @@
+             "nextflow": "26.04.6"
          }
      }
- }
+-}+}
+
 'modules/nf-core/quarto/notebook/tests/nextflow.config' is unchanged
-'modules/nf-core/quarto/notebook/tests/assets/malformed_versions.qmd' was created
-'modules/nf-core/quarto/notebook/tests/assets/missing_versions.qmd' was created
-'modules/nf-core/quarto/notebook/tests/assets/explicit_versions.qmd' was created
 ************************************************************
