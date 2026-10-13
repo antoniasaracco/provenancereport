@@ -35,7 +35,7 @@ Changes in 'quarto/notebook/main.nf':
 @@ -85,16 +86,20 @@
          --execute-params params.yml \\
          --output ${prefix}.html
- 
+
 -    # Check that notebook package versions is exported
 -    if [ ! -f versions.csv ]; then
 -        echo "ERROR: versions.csv not found; the notebook must write out [tool,version] pairs used within it." >&2
@@ -48,7 +48,7 @@ Changes in 'quarto/notebook/main.nf':
 +        echo "ERROR: versions.csv must contain exactly two non-empty comma-separated fields per row: package,version." >&2
          exit 1
      fi
- 
+
      # Write notebook package versions to YAML
      cat <<- END_VERSIONS > versions.yml
      "${task.process}":
@@ -56,7 +56,7 @@ Changes in 'quarto/notebook/main.nf':
 +    \$(awk -F',' '{printf "    %s: \\"%s\\"\\n", \$1, \$2}' versions.csv)
      END_VERSIONS
      """
- 
+
 
 Changes in 'quarto/notebook/tests/main.nf.test':
 --- modules/nf-core/quarto/notebook/tests/main.nf.test
@@ -124,11 +124,12 @@ Changes in 'quarto/notebook/tests/main.nf.test':
              )
          }
 
+'modules/nf-core/quarto/notebook/tests/versions.nf.test' was created
 Changes in 'quarto/notebook/tests/main.nf.test.snap':
 --- modules/nf-core/quarto/notebook/tests/main.nf.test.snap
 +++ modules/nf-core/quarto/notebook/tests/main.nf.test.snap
 @@ -33,16 +33,23 @@
-                     
+
                  ],
                  "5": [
 +                    [
@@ -360,7 +361,9 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
 +            "nextflow": "25.10.4"
          }
      }
--}+}
-
+ }
 'modules/nf-core/quarto/notebook/tests/nextflow.config' is unchanged
+'modules/nf-core/quarto/notebook/tests/assets/malformed_versions.qmd' was created
+'modules/nf-core/quarto/notebook/tests/assets/missing_versions.qmd' was created
+'modules/nf-core/quarto/notebook/tests/assets/explicit_versions.qmd' was created
 ************************************************************
