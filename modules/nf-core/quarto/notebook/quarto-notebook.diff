@@ -124,7 +124,6 @@ Changes in 'quarto/notebook/tests/main.nf.test':
              )
          }
 
-'modules/nf-core/quarto/notebook/tests/versions.nf.test' was created
 Changes in 'quarto/notebook/tests/main.nf.test.snap':
 --- modules/nf-core/quarto/notebook/tests/main.nf.test.snap
 +++ modules/nf-core/quarto/notebook/tests/main.nf.test.snap
@@ -363,7 +362,4 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
      }
  }
 'modules/nf-core/quarto/notebook/tests/nextflow.config' is unchanged
-'modules/nf-core/quarto/notebook/tests/assets/malformed_versions.qmd' was created
-'modules/nf-core/quarto/notebook/tests/assets/missing_versions.qmd' was created
-'modules/nf-core/quarto/notebook/tests/assets/explicit_versions.qmd' was created
 ************************************************************
