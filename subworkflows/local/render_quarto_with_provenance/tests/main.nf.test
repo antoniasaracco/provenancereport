@@ -13,13 +13,13 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id:'missing_versions' ],
                     file("${projectDir}/subworkflows/local/render_quarto_with_provenance/tests/assets/missing_versions.qmd", checkIfExists: true)
                 ])
-                input[1] = Channel.value([:])
-                input[2] = Channel.value([])
-                input[3] = Channel.value([])
+                input[1] = channel.value([:])
+                input[2] = channel.value([])
+                input[3] = channel.value([])
                 """
             }
         }
@@ -52,13 +52,13 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id:'explicit_versions' ],
                     file("${projectDir}/subworkflows/local/render_quarto_with_provenance/tests/assets/explicit_versions.qmd", checkIfExists: true)
                 ])
-                input[1] = Channel.value([:])
-                input[2] = Channel.value([])
-                input[3] = Channel.value([])
+                input[1] = channel.value([:])
+                input[2] = channel.value([])
+                input[3] = channel.value([])
                 """
             }
         }
@@ -80,13 +80,13 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id:'malformed_versions' ],
                     file("${projectDir}/subworkflows/local/render_quarto_with_provenance/tests/assets/malformed_versions.qmd", checkIfExists: true)
                 ])
-                input[1] = Channel.value([:])
-                input[2] = Channel.value([])
-                input[3] = Channel.value([])
+                input[1] = channel.value([:])
+                input[2] = channel.value([])
+                input[3] = channel.value([])
                 """
             }
         }
