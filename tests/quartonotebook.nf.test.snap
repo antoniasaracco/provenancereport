@@ -22,7 +22,6 @@
                 }
             },
             [
-                "README.md:md5,60d0cf6802a719282da139b0ccb01adb",
                 "artifacts.csv",
                 "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "md5sum",
@@ -57,7 +56,6 @@
                 "samplesheet_quartonotebook.csv"
             ],
             [
-                "README.md:md5,60d0cf6802a719282da139b0ccb01adb",
                 "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "artifact.txt:md5,b10a8db164e0754105b7a99be72e3fe5",

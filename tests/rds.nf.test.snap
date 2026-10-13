@@ -61,7 +61,6 @@
                 }
             },
             [
-                "README.md:md5,60d0cf6802a719282da139b0ccb01adb",
                 "artifacts.csv",
                 "external_rds_report.qmd",
                 "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
@@ -97,7 +96,6 @@
                 "samplesheet_rds.csv"
             ],
             [
-                "README.md:md5,60d0cf6802a719282da139b0ccb01adb",
                 "external_rds_report.qmd:md5,33c6e034d026f8d8d619711bec521665",
                 "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",

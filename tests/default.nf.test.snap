@@ -41,7 +41,6 @@
                 }
             },
             [
-                "README.md:md5,60d0cf6802a719282da139b0ccb01adb",
                 "artifacts.csv",
                 "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "md5sum",
@@ -77,7 +76,6 @@
                 "samplesheet.csv"
             ],
             [
-                "README.md:md5,60d0cf6802a719282da139b0ccb01adb",
                 "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "provenance_report_input_files.tsv:md5,1458dc07273f8a570beae2b5f4358a49",
@@ -135,7 +133,6 @@
                 }
             },
             [
-                "README.md:md5,60d0cf6802a719282da139b0ccb01adb",
                 "artifacts.csv",
                 "document.csv",
                 "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
@@ -173,7 +170,6 @@
                 "samplesheet.csv"
             ],
             [
-                "README.md:md5,60d0cf6802a719282da139b0ccb01adb",
                 "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "provenance_report_input_files.tsv:md5,1458dc07273f8a570beae2b5f4358a49",
