@@ -85,10 +85,11 @@ workflow PROVENANCEREPORT {
     )
 
     //
-    // Calculate checksums for every samplesheet input, the rendered report, and the optional document
+    // Calculate checksums for every samplesheet input, the source notebook, the rendered report, and the optional document
     //
     def ch_checksum_files = ch_samplesheet
         .map { _meta, input_file -> input_file }
+        .mix(RENDER_QUARTO_WITH_PROVENANCE.out.source_notebook.map { _meta, source_notebook -> source_notebook })
         .mix(RENDER_QUARTO_WITH_PROVENANCE.out.html.map { _meta, report_file -> report_file })
         .mix(ch_document)
         .collect()
@@ -262,7 +263,9 @@ workflow PROVENANCEREPORT {
     multiqc_report = ch_multiqc_reports
     document       = ch_publishable_document
     reports        = RENDER_QUARTO_WITH_PROVENANCE.out.html.map      { _meta, html     -> html     }
-    notebook       = RENDER_QUARTO_WITH_PROVENANCE.out.notebook.map  { _meta, qmd      -> qmd      }
+    notebook       = RENDER_QUARTO_WITH_PROVENANCE.out.source_notebook
+        .mix(RENDER_QUARTO_WITH_PROVENANCE.out.notebook)
+        .map { _meta, qmd -> qmd }
     artifacts      = RENDER_QUARTO_WITH_PROVENANCE.out.artifacts.map { _meta, artifact -> artifact } // channel: [ val(meta), path(artifacts/*) ]
     md5sum         = MD5SUM.out.checksum.map          { _meta, checksum -> checksum }
 }

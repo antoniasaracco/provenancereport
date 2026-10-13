@@ -169,6 +169,8 @@ Runtime capture includes packages loaded dynamically or by sourced code, which s
 
 Automatic fallback generation supports R/knitr and Python/Jupyter notebooks. A notebook containing both R and Python executable cells is rejected because one final cell cannot observe both runtime environments reliably. Notebooks using another execution engine must be adapted to one of these supported runtimes or generate `versions.csv` through a separately reviewed workflow.
 
+The workflow publishes both the unchanged source notebook and the prepared copy under `quartonotebook/`. Both paths are listed in `notebook.csv`, while the checksum report records the unchanged source notebook.
+
 The CSV is an internal, language-neutral interchange file. The module converts it to the process-keyed `versions.yml` required by the Nextflow `versions` topic; that YAML is what the workflow sends to MultiQC.
 
 ## Review document input
@@ -187,14 +189,14 @@ The main workflow performs ten steps:
 
 1. `PIPELINE_INITIALISATION` validates `--input` with the `nf-schema` plugin and resolves each `path` entry as a single file.
 2. The workflow selects the notebook using `--notebook`, or the bundled `assets/provenance_report.qmd` if `--notebook` is unset.
-3. `RENDER_QUARTO_WITH_PROVENANCE` coordinates notebook preparation and rendering. Inside it, `QUARTO_PREPARE` creates a traceable, cached notebook copy containing the guarded R or Python runtime-version fallback.
+3. `RENDER_QUARTO_WITH_PROVENANCE` coordinates notebook preparation and rendering. Inside it, `QUARTO_PREPARE` preserves the unchanged source notebook and creates a traceable, cached notebook copy containing the guarded R or Python runtime-version fallback.
 4. Within the same subworkflow, `QUARTO_NOTEBOOK` renders one Quarto HTML report using all samplesheet rows. The process receives `[meta, notebook]`, a parameter map, and the actual input files as a plain path channel. It preserves an explicit `versions.csv` or uses the appended fallback, converts the package rows to `versions.yml`, and also reports Quarto and Papermill through its eval outputs.
-5. `MD5SUM` calculates MD5 checksums for every samplesheet input, the rendered Quarto HTML report, and the review document when `--document` is provided.
+5. `MD5SUM` calculates MD5 checksums for every samplesheet input, the unchanged source notebook, the rendered Quarto HTML report, and the review document when `--document` is provided.
 6. `REPORTENVIRONMENT` receives the resolved `QUARTO_NOTEBOOK` runtime metadata and inherits the matching container image or Conda environment when one is configured. It captures the runtime backend, runtime reference, `R sessionInfo()`, and Python version. Missing R or Python installations are reported as unavailable without failing the run.
 7. If `--document` is set, the workflow publishes the supplied review file with the results.
 8. `MULTIQC` collates the input samplesheet, file checksums, pipeline outputs, workflow parameters, software versions, runtime-environment information, and Nextflow execution profile.
 9. The `nf-prov` plugin generates BCO and Workflow Run RO-Crate provenance records.
-10. The workflow publishes the Quarto and MultiQC reports, report artifacts, checksums, the optional review document, and standard pipeline metadata under `pipeline_info/`.
+10. The workflow publishes the unchanged and prepared Quarto notebooks, the Quarto and MultiQC reports, report artifacts, checksums, the optional review document, and standard pipeline metadata under `pipeline_info/`.
 
 The notebook receives these useful parameters:
 

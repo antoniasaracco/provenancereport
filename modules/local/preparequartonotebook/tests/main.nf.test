@@ -23,9 +23,12 @@ nextflow_process {
 
         then {
             def source = path("${projectDir}/modules/local/preparequartonotebook/tests/assets/r_dynamic.qmd")
+            def emitted_source = path(process.out.source_notebook[0][1])
             def prepared = path(process.out.notebook[0][1])
             assertAll(
                 { assert process.success },
+                { assert emitted_source.fileName == source.fileName },
+                { assert emitted_source.md5 == source.md5 },
                 { assert prepared.fileName.toString() == "prepared_${source.fileName}" },
                 { assert prepared.text.startsWith(source.text) },
                 { assert prepared.text.contains('packages <- sort(setdiff(loadedNamespaces(), "base"))') },
@@ -166,6 +169,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
+                { assert path(process.out.source_notebook[0][1]).fileName.toString() == 'r_dynamic.qmd' },
                 { assert path(process.out.notebook[0][1]).text.contains('Runtime R package capture') },
             )
         }

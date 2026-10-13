@@ -36,9 +36,9 @@ The default workflow performs the following steps:
 
 1. Validate and normalise the input samplesheet with `nf-schema`.
 2. Resolve each `path` entry from the samplesheet as one input file.
-3. Create a cached, traceable notebook copy with a guarded R or Python package-version fallback.
+3. Preserve the unchanged source notebook and create a cached, traceable copy with a guarded R or Python package-version fallback.
 4. Render one Quarto notebook with all listed files and record package versions from the notebook session using the nf-core `quarto_notebook` module.
-5. Calculate MD5 checksums for every samplesheet input, the rendered Quarto HTML, and the optional review document using the nf-core `md5sum` module.
+5. Calculate MD5 checksums for every samplesheet input, the unchanged source notebook, the rendered Quarto HTML, and the optional review document using the nf-core `md5sum` module.
 6. Run `REPORTENVIRONMENT` in the resolved Quarto runtime to collect the R session, Python version, and container or Conda environment details.
 7. If `--document` is provided, publish the review or sign-off document with the pipeline results.
 8. Generate a MultiQC audit report containing the input samplesheet, file checksums, published outputs, run configuration, software versions, and runtime information.
@@ -88,8 +88,8 @@ For more details and further functionality, please refer to the [usage documenta
 
 A successful run produces:
 
-- `quartonotebook/*.html`: the rendered Quarto report, plus the prepared source notebook and any report artifacts. `reports.csv`, `notebook.csv`, and `artifacts.csv` index those published outputs for provenance reporting.
-- `md5sum/provenancereport.md5`: checksums for every samplesheet input, the rendered report, and the optional review document.
+- `quartonotebook/`: the rendered Quarto report, the unchanged source notebook, the prepared notebook used for rendering, and any report artifacts. `reports.csv`, `notebook.csv`, and `artifacts.csv` index those published outputs for provenance reporting.
+- `md5sum/provenancereport.md5`: checksums for every samplesheet input, the unchanged source notebook, the rendered report, and the optional review document.
 - `multiqc/multiqc_report.html`: an audit report covering inputs, checksums, outputs, parameters, software versions, and the report runtime.
 - `pipeline_info/manifest_<timestamp>.bco.json` and `ro-crate-metadata.json`: BCO and Workflow Run RO-Crate provenance.
 - `pipeline_info/`: Nextflow execution reports, trace, DAG, parameters, and collected software versions.
