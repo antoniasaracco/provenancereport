@@ -65,7 +65,7 @@ Changes in 'quarto/notebook/tests/main.nf.test':
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
-+                    process.out.runtime_environment,
++                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -73,7 +73,7 @@ Changes in 'quarto/notebook/tests/main.nf.test':
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
-+                    process.out.runtime_environment,
++                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -81,7 +81,7 @@ Changes in 'quarto/notebook/tests/main.nf.test':
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
-+                    process.out.runtime_environment,
++                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -89,7 +89,7 @@ Changes in 'quarto/notebook/tests/main.nf.test':
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
-+                    process.out.runtime_environment,
++                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -97,7 +97,7 @@ Changes in 'quarto/notebook/tests/main.nf.test':
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
-+                    process.out.runtime_environment,
++                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -105,10 +105,24 @@ Changes in 'quarto/notebook/tests/main.nf.test':
                  { assert snapshot(
                      process.out.findAll { key, val -> key.startsWith('versions') },
                      process.out.artifacts,
-+                    process.out.runtime_environment,
++                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                      process.out.params_yaml
                  ).match() },
                  { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World') } },
+@@ -222,6 +228,12 @@
+         then {
+             assertAll(
+                 { assert process.success },
+-                { assert snapshot(process.out).match() },
++                { assert snapshot(
++                    process.out.collectEntries { key, value ->
++                        [(key): value == process.out.runtime_environment
++                            ? value.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] }
++                            : value]
++                    }
++                ).match() },
+             )
+         }
 
 Changes in 'quarto/notebook/tests/main.nf.test.snap':
 --- modules/nf-core/quarto/notebook/tests/main.nf.test.snap
@@ -119,8 +133,8 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
                  "5": [
 +                    [
 +                        "QUARTO_NOTEBOOK",
-+                        "podman",
-+                        "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                        "<runtime_backend>",
++                        "<runtime_reference>"
 +                    ]
 +                ],
 +                "6": [
@@ -151,8 +165,8 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
 +                "runtime_environment": [
 +                    [
 +                        "QUARTO_NOTEBOOK",
-+                        "podman",
-+                        "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                        "<runtime_backend>",
++                        "<runtime_reference>"
 +                    ]
 +                ],
                  "versions": [
@@ -178,8 +192,8 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "<runtime_backend>",
++                    "<runtime_reference>"
 +                ]
 +            ],
 +            [
@@ -207,8 +221,8 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "<runtime_backend>",
++                    "<runtime_reference>"
 +                ]
 +            ],
 +            [
@@ -236,8 +250,8 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "<runtime_backend>",
++                    "<runtime_reference>"
 +                ]
 +            ],
 +            [
@@ -265,8 +279,8 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "<runtime_backend>",
++                    "<runtime_reference>"
 +                ]
 +            ],
 +            [
@@ -294,8 +308,8 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "<runtime_backend>",
++                    "<runtime_reference>"
 +                ]
 +            ],
 +            [
@@ -323,8 +337,8 @@ Changes in 'quarto/notebook/tests/main.nf.test.snap':
              [
                  [
 +                    "QUARTO_NOTEBOOK",
-+                    "podman",
-+                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
++                    "<runtime_backend>",
++                    "<runtime_reference>"
 +                ]
 +            ],
 +            [
