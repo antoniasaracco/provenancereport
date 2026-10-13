@@ -1,4 +1,4 @@
-include { QUARTO_PREPARE  } from '../../../modules/local/preparequartonotebook/main'
+include { QUARTO_PREPARE  } from '../../../modules/local/quarto_prepare/main'
 include { QUARTO_NOTEBOOK } from '../../../modules/nf-core/quarto/notebook/main'
 
 workflow RENDER_QUARTO_WITH_PROVENANCE {
