@@ -74,7 +74,14 @@ def dumpParametersToJSON(outdir) {
     def timestamp = new java.util.Date().format('yyyy-MM-dd_HH-mm-ss')
     def filename  = "params_${timestamp}.json"
     def temp_pf       = workflow.launchDir.resolve(".${filename}")
-    def jsonStr   = groovy.json.JsonOutput.toJson(params)
+    def jsonGenerator = new groovy.json.JsonGenerator.Options()
+        .excludeNulls()
+        .addConverter(Path) { Path path -> path.toUriString() }
+        .addConverter(Duration) { Duration duration -> duration.toMillis() }
+        .addConverter(MemoryUnit) { MemoryUnit memory -> memory.toBytes() }
+        .addConverter(nextflow.script.types.VersionNumber) { nextflow.script.types.VersionNumber version -> version.toString() }
+        .build()
+    def jsonStr   = jsonGenerator.toJson(params)
     temp_pf.text  = groovy.json.JsonOutput.prettyPrint(jsonStr)
     if (outdir instanceof Path) {
         temp_pf.copyTo(outdir.resolve("pipeline_info/${filename}"))

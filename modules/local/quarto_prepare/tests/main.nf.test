@@ -6,7 +6,7 @@ nextflow_process {
 
     tag "modules"
     tag "modules_local"
-    tag "preparequartonotebook"
+    tag "quarto_prepare"
 
     test("prepare R notebook using runtime-loaded namespaces") {
 
@@ -15,17 +15,20 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'r_dynamic' ],
-                    file("${projectDir}/modules/local/preparequartonotebook/tests/assets/r_dynamic.qmd", checkIfExists: true)
+                    file("${projectDir}/modules/local/quarto_prepare/tests/assets/r_dynamic.qmd", checkIfExists: true)
                 ]
                 """
             }
         }
 
         then {
-            def source = path("${projectDir}/modules/local/preparequartonotebook/tests/assets/r_dynamic.qmd")
+            def source = path("${projectDir}/modules/local/quarto_prepare/tests/assets/r_dynamic.qmd")
+            def emitted_source = path(process.out.source_notebook[0][1])
             def prepared = path(process.out.notebook[0][1])
             assertAll(
                 { assert process.success },
+                { assert emitted_source.fileName == source.fileName },
+                { assert emitted_source.md5 == source.md5 },
                 { assert prepared.fileName.toString() == "prepared_${source.fileName}" },
                 { assert prepared.text.startsWith(source.text) },
                 { assert prepared.text.contains('packages <- sort(setdiff(loadedNamespaces(), "base"))') },
@@ -42,7 +45,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'python_dynamic' ],
-                    file("${projectDir}/modules/local/preparequartonotebook/tests/assets/python_dynamic.qmd", checkIfExists: true)
+                    file("${projectDir}/modules/local/quarto_prepare/tests/assets/python_dynamic.qmd", checkIfExists: true)
                 ]
                 """
             }
@@ -66,7 +69,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'explicit_versions' ],
-                    file("${projectDir}/modules/local/preparequartonotebook/tests/assets/explicit_versions.qmd", checkIfExists: true)
+                    file("${projectDir}/modules/local/quarto_prepare/tests/assets/explicit_versions.qmd", checkIfExists: true)
                 ]
                 """
             }
@@ -90,7 +93,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'yaml_like_code' ],
-                    file("${projectDir}/modules/local/preparequartonotebook/tests/assets/yaml_like_code.qmd", checkIfExists: true)
+                    file("${projectDir}/modules/local/quarto_prepare/tests/assets/yaml_like_code.qmd", checkIfExists: true)
                 ]
                 """
             }
@@ -113,7 +116,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'mixed' ],
-                    file("${projectDir}/modules/local/preparequartonotebook/tests/assets/mixed.qmd", checkIfExists: true)
+                    file("${projectDir}/modules/local/quarto_prepare/tests/assets/mixed.qmd", checkIfExists: true)
                 ]
                 """
             }
@@ -134,7 +137,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'unsupported' ],
-                    file("${projectDir}/modules/local/preparequartonotebook/tests/assets/unsupported.qmd", checkIfExists: true)
+                    file("${projectDir}/modules/local/quarto_prepare/tests/assets/unsupported.qmd", checkIfExists: true)
                 ]
                 """
             }
@@ -157,7 +160,7 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'r_dynamic' ],
-                    file("${projectDir}/modules/local/preparequartonotebook/tests/assets/r_dynamic.qmd", checkIfExists: true)
+                    file("${projectDir}/modules/local/quarto_prepare/tests/assets/r_dynamic.qmd", checkIfExists: true)
                 ]
                 """
             }
@@ -166,6 +169,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
+                { assert path(process.out.source_notebook[0][1]).fileName.toString() == 'r_dynamic.qmd' },
                 { assert path(process.out.notebook[0][1]).text.contains('Runtime R package capture') },
             )
         }

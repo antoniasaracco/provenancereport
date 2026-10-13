@@ -1,4 +1,4 @@
-include { QUARTO_PREPARE  } from '../../../modules/local/preparequartonotebook/main'
+include { QUARTO_PREPARE  } from '../../../modules/local/quarto_prepare/main'
 include { QUARTO_NOTEBOOK } from '../../../modules/nf-core/quarto/notebook/main'
 
 workflow RENDER_QUARTO_WITH_PROVENANCE {
@@ -23,6 +23,7 @@ workflow RENDER_QUARTO_WITH_PROVENANCE {
 
     emit:
     html                = QUARTO_NOTEBOOK.out.html
+    source_notebook     = QUARTO_PREPARE.out.source_notebook
     notebook            = QUARTO_NOTEBOOK.out.notebook
     params_yaml         = QUARTO_NOTEBOOK.out.params_yaml
     artifacts           = QUARTO_NOTEBOOK.out.artifacts

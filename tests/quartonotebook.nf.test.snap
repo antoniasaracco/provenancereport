@@ -22,7 +22,6 @@
                 }
             },
             [
-                "README.md:md5,a7ba1823957aba61b7c6036e6aeab137",
                 "artifacts.csv",
                 "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "md5sum",
@@ -52,15 +51,16 @@
                 "quartonotebook/artifacts/artifact.txt",
                 "quartonotebook/prepared_quarto_r.qmd",
                 "quartonotebook/quarto_r.html",
+                "quartonotebook/quarto_r.qmd",
                 "reports.csv",
                 "samplesheet_quartonotebook.csv"
             ],
             [
-                "README.md:md5,a7ba1823957aba61b7c6036e6aeab137",
                 "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
                 "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "artifact.txt:md5,b10a8db164e0754105b7a99be72e3fe5",
                 "prepared_quarto_r.qmd:md5,a00a042a7a00a18d4859c8b783c0df24",
+                "quarto_r.qmd:md5,a6a7392a32a4a2f5637fd8245b936031",
                 "samplesheet_quartonotebook.csv:md5,33cd9804d52f8ff96e2244df29e5cd2a"
             ]
         ],

@@ -11,7 +11,6 @@
 include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { samplesheetToList         } from 'plugin/nf-schema'
-include { paramsHelp                } from 'plugin/nf-schema'
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NFCORE_PIPELINE     } from '../../nf-core/utils_nfcore_pipeline'
@@ -108,8 +107,22 @@ workflow PIPELINE_INITIALISATION {
     channel
         .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
         .map { meta, input_path ->
-            return [ meta, file(input_path, checkIfExists: true) ]
+            [ meta, file(input_path, checkIfExists: true) ]
         }
+        .collect(flat: false)
+        .map { rows ->
+            def duplicate_input_file_names = rows
+                .collect { _meta, input_file -> input_file.getName() }
+                .countBy { input_file_name -> input_file_name }
+                .findAll { _input_file_name, count -> count > 1 }
+                .keySet()
+                .sort()
+            if (duplicate_input_file_names) {
+                error "Input files must have unique basenames because they are staged into the same directory. Duplicate basenames: ${duplicate_input_file_names.join(', ')}"
+            }
+            rows
+        }
+        .flatMap { rows -> rows }
         .set { ch_samplesheet }
 
     ch_input     = channel.value(file(input, checkIfExists: true))

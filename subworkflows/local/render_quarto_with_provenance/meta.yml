@@ -28,6 +28,10 @@ output:
       type: file
       description: Rendered HTML report together with its metadata map
       pattern: "*.html"
+  - source_notebook:
+      type: file
+      description: Unmodified source notebook together with its metadata map
+      pattern: "*.qmd"
   - notebook:
       type: file
       description: Prepared Quarto notebook together with its metadata map

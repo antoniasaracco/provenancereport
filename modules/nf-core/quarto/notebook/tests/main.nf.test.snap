@@ -35,8 +35,8 @@
                 "5": [
                     [
                         "QUARTO_NOTEBOOK",
-                        "podman",
-                        "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
+                        "<runtime_backend>",
+                        "<runtime_reference>"
                     ]
                 ],
                 "6": [
@@ -89,8 +89,8 @@
                 "runtime_environment": [
                     [
                         "QUARTO_NOTEBOOK",
-                        "podman",
-                        "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
+                        "<runtime_backend>",
+                        "<runtime_reference>"
                     ]
                 ],
                 "versions": [
@@ -150,8 +150,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "podman",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
+                    "<runtime_backend>",
+                    "<runtime_reference>"
                 ]
             ],
             [
@@ -201,8 +201,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "podman",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
+                    "<runtime_backend>",
+                    "<runtime_reference>"
                 ]
             ],
             [
@@ -252,8 +252,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "podman",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
+                    "<runtime_backend>",
+                    "<runtime_reference>"
                 ]
             ],
             [
@@ -303,8 +303,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "podman",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
+                    "<runtime_backend>",
+                    "<runtime_reference>"
                 ]
             ],
             [
@@ -354,8 +354,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "podman",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
+                    "<runtime_backend>",
+                    "<runtime_reference>"
                 ]
             ],
             [
@@ -405,8 +405,8 @@
             [
                 [
                     "QUARTO_NOTEBOOK",
-                    "podman",
-                    "community.wave.seqera.io/library/jupyter_matplotlib_papermill_quarto_r-rmarkdown:6d15193ce3dfc665"
+                    "<runtime_backend>",
+                    "<runtime_reference>"
                 ]
             ],
             [

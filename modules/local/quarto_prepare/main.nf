@@ -10,6 +10,7 @@ process QUARTO_PREPARE {
     tuple val(meta), path(notebook)
 
     output:
+    tuple val(meta), path(notebook)                                       , emit: source_notebook
     tuple val(meta), path("prepared_${notebook.name}")                    , emit: notebook
     tuple val("${task.process}"), val('python'), eval('python --version | sed "s/^Python //"'), emit: versions_python, topic: versions
     tuple val("${task.process}"), val('pyyaml'), eval('python -c "import yaml; print(yaml.__version__)"'), emit: versions_pyyaml, topic: versions
