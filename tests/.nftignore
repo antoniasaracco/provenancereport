@@ -11,6 +11,8 @@ README.md
 docs/*
 docs/**/*
 nextflow.config
+main.nf
+nextflow_schema.json
 artifacts.csv
 multiqc_report.csv
 document.csv

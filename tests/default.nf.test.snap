@@ -76,8 +76,6 @@
                 "samplesheet.csv"
             ],
             [
-                "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
-                "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "provenance_report_input_files.tsv:md5,1458dc07273f8a570beae2b5f4358a49",
                 "provenance_report_summary.txt:md5,b32c187edd9b5ec9c088a0d2a41ff01d",
                 "prepared_provenance_report.qmd:md5,52715f44d9355b3a8eb358113dfc02a5",
@@ -85,7 +83,7 @@
                 "samplesheet.csv:md5,760077fbeb3954e468d83244325f4ade"
             ]
         ],
-        "timestamp": "2026-10-08T17:41:46.160151316",
+        "timestamp": "2026-10-14T18:38:04.273089264",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
@@ -170,8 +168,6 @@
                 "samplesheet.csv"
             ],
             [
-                "main.nf:md5,8f618bf1043edcc8ed21af03c12ee53c",
-                "nextflow_schema.json:md5,bc89173cc2365b719dbdb0fc249be636",
                 "provenance_report_input_files.tsv:md5,1458dc07273f8a570beae2b5f4358a49",
                 "provenance_report_summary.txt:md5,b32c187edd9b5ec9c088a0d2a41ff01d",
                 "prepared_provenance_report.qmd:md5,52715f44d9355b3a8eb358113dfc02a5",
@@ -180,7 +176,7 @@
                 "samplesheet.csv:md5,760077fbeb3954e468d83244325f4ade"
             ]
         ],
-        "timestamp": "2026-10-08T17:42:19.996738702",
+        "timestamp": "2026-10-14T18:38:37.906766493",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
