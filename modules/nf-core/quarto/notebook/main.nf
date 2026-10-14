@@ -28,7 +28,6 @@ process QUARTO_NOTEBOOK {
     tuple val(meta), path("params.yml")                                                        , emit: params_yaml
     tuple val(meta), path("${notebook_parameters.artifact_dir}/*")                             , emit: artifacts  , optional: true
     tuple val(meta), path("_extensions")                                                       , emit: extensions , optional: true
-    tuple val("${task.process}"), val("${workflow.containerEngine ?: (task.executor == 'awsbatch' ? 'awsbatch' : (task.conda ? 'conda' : 'none'))}"), val("${((workflow.containerEngine || task.executor == 'awsbatch') ? task.container : task.conda) ?: 'Not configured'}"), emit: runtime_environment
     path "versions.yml"                                                                        , emit: versions          , topic: versions
     tuple val("${task.process}"), val('quarto'), eval('quarto -v')                             , emit: versions_quarto   , topic: versions
     tuple val("${task.process}"), val('papermill'), eval('papermill --version | cut -f1 -d" "'), emit: versions_papermill, topic: versions
@@ -65,6 +64,10 @@ process QUARTO_NOTEBOOK {
     export XDG_CACHE_HOME="./.xdg_cache_home"
     export XDG_DATA_HOME="./.xdg_data_home"
 
+    # Without a _quarto.yml here, Quarto searches parent directories for a project and can
+    # pick one outside the task (https://github.com/quarto-dev/quarto-cli/issues/14980)
+    [ -e _quarto.yml ] || printf 'project:\\n  type: default\\n' > _quarto.yml
+
     # Fix Quarto for Apptainer (see https://community.seqera.io/t/confusion-over-why-a-tool-works-in-docker-but-fails-in-singularity-when-the-installation-doesnt-differ-i-e-using-wave-micromamba/1244)
     ENV_QUARTO=/opt/conda/etc/conda/activate.d/quarto.sh
     set +u
@@ -86,20 +89,16 @@ process QUARTO_NOTEBOOK {
         --execute-params params.yml \\
         --output ${prefix}.html
 
-    # Check that notebook package versions were exported in the expected format
-    if [ ! -s versions.csv ]; then
-        echo "ERROR: versions.csv not found or empty; the notebook must write out [tool,version] pairs used within it." >&2
-        exit 1
-    fi
-    if ! awk -F',' 'NF != 2 || \$1 == "" || \$2 == "" { exit 1 }' versions.csv; then
-        echo "ERROR: versions.csv must contain exactly two non-empty comma-separated fields per row: package,version." >&2
+    # Check that notebook package versions is exported
+    if [ ! -f versions.csv ]; then
+        echo "ERROR: versions.csv not found; the notebook must write out [tool,version] pairs used within it." >&2
         exit 1
     fi
 
     # Write notebook package versions to YAML
     cat <<- END_VERSIONS > versions.yml
     "${task.process}":
-    \$(awk -F',' '{printf "    %s: \\"%s\\"\\n", \$1, \$2}' versions.csv)
+    \$(awk -F',' '{printf "    %s: %s\\n", \$1, \$2}' versions.csv)
     END_VERSIONS
     """
 

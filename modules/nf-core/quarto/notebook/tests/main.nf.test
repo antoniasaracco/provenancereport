@@ -32,7 +32,6 @@ nextflow_process {
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
-                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -63,7 +62,6 @@ nextflow_process {
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
-                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -94,7 +92,6 @@ nextflow_process {
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
-                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -126,7 +123,6 @@ nextflow_process {
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
-                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -158,7 +154,6 @@ nextflow_process {
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
-                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World 1') } },
@@ -197,7 +192,6 @@ nextflow_process {
                 { assert snapshot(
                     process.out.findAll { key, val -> key.startsWith('versions') },
                     process.out.artifacts,
-                    process.out.runtime_environment.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] },
                     process.out.params_yaml
                 ).match() },
                 { assert path(process.out.html[0][1]).readLines().any { it.contains('Hello World') } },
@@ -228,13 +222,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(
-                    process.out.collectEntries { key, value ->
-                        [(key): value == process.out.runtime_environment
-                            ? value.collect { entry -> [entry[0], '<runtime_backend>', '<runtime_reference>'] }
-                            : value]
-                    }
-                ).match() },
+                { assert snapshot(process.out).match() },
             )
         }
 

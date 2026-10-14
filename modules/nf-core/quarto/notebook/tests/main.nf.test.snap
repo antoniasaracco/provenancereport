@@ -33,23 +33,16 @@
                     
                 ],
                 "5": [
-                    [
-                        "QUARTO_NOTEBOOK",
-                        "<runtime_backend>",
-                        "<runtime_reference>"
-                    ]
-                ],
-                "6": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
-                "7": [
+                "6": [
                     [
                         "QUARTO_NOTEBOOK",
                         "quarto",
                         "1.7.31"
                     ]
                 ],
-                "8": [
+                "7": [
                     [
                         "QUARTO_NOTEBOOK",
                         "papermill",
@@ -86,13 +79,6 @@
                         "params.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "runtime_environment": [
-                    [
-                        "QUARTO_NOTEBOOK",
-                        "<runtime_backend>",
-                        "<runtime_reference>"
-                    ]
-                ],
                 "versions": [
                     "versions.yml:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
@@ -112,10 +98,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-15T14:57:19.310800321",
+        "timestamp": "2026-08-18T09:19:47.986553",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "test notebook - [qmd:r]": {
@@ -149,13 +135,6 @@
             ],
             [
                 [
-                    "QUARTO_NOTEBOOK",
-                    "<runtime_backend>",
-                    "<runtime_reference>"
-                ]
-            ],
-            [
-                [
                     {
                         "id": "test"
                     },
@@ -163,10 +142,10 @@
                 ]
             ]
         ],
-        "timestamp": "2026-09-15T15:00:47.248242428",
+        "timestamp": "2026-08-18T15:12:25.10271",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "test notebook - parametrized - [qmd:python]": {
@@ -200,13 +179,6 @@
             ],
             [
                 [
-                    "QUARTO_NOTEBOOK",
-                    "<runtime_backend>",
-                    "<runtime_reference>"
-                ]
-            ],
-            [
-                [
                     {
                         "id": "test"
                     },
@@ -214,10 +186,10 @@
                 ]
             ]
         ],
-        "timestamp": "2026-09-15T15:01:49.074485571",
+        "timestamp": "2026-08-18T15:13:37.473159",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "test notebook - parametrized - [rmd]": {
@@ -251,13 +223,6 @@
             ],
             [
                 [
-                    "QUARTO_NOTEBOOK",
-                    "<runtime_backend>",
-                    "<runtime_reference>"
-                ]
-            ],
-            [
-                [
                     {
                         "id": "test"
                     },
@@ -265,10 +230,10 @@
                 ]
             ]
         ],
-        "timestamp": "2026-09-15T15:02:09.568888123",
+        "timestamp": "2026-08-18T15:13:53.297883",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "test notebook - parametrized - [ipynb]": {
@@ -302,13 +267,6 @@
             ],
             [
                 [
-                    "QUARTO_NOTEBOOK",
-                    "<runtime_backend>",
-                    "<runtime_reference>"
-                ]
-            ],
-            [
-                [
                     {
                         "id": "test"
                     },
@@ -316,10 +274,10 @@
                 ]
             ]
         ],
-        "timestamp": "2026-09-15T15:02:29.368701413",
+        "timestamp": "2026-08-18T15:14:10.605053",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "test notebook - [qmd:python]": {
@@ -353,13 +311,6 @@
             ],
             [
                 [
-                    "QUARTO_NOTEBOOK",
-                    "<runtime_backend>",
-                    "<runtime_reference>"
-                ]
-            ],
-            [
-                [
                     {
                         "id": "test"
                     },
@@ -367,10 +318,10 @@
                 ]
             ]
         ],
-        "timestamp": "2026-09-15T15:01:07.969193608",
+        "timestamp": "2026-08-18T15:12:45.306028",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     },
     "test notebook - parametrized - [qmd:r]": {
@@ -404,13 +355,6 @@
             ],
             [
                 [
-                    "QUARTO_NOTEBOOK",
-                    "<runtime_backend>",
-                    "<runtime_reference>"
-                ]
-            ],
-            [
-                [
                     {
                         "id": "test"
                     },
@@ -418,10 +362,10 @@
                 ]
             ]
         ],
-        "timestamp": "2026-09-15T15:01:28.76675383",
+        "timestamp": "2026-08-18T15:13:18.571016",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.4"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     }
 }
